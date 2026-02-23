@@ -1,3 +1,0 @@
-- Take note of RLS policies created
-- Seed content and audit logs
-- Test content at different role levels via SQL impersonation
