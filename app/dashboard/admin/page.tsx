@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import LogoutButton from '@/app/components/logoutButton'
+import AdminTable from './AdminTable'
 
 export default async function AdminPage() {
   const supabase = await createServerSupabaseClient()
@@ -22,6 +23,7 @@ export default async function AdminPage() {
   return (
     <div>
       <h1>Admin Dashboard</h1>
+      <AdminTable />
       <LogoutButton />
     </div>
   )
