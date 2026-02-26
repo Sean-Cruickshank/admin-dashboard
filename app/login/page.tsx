@@ -33,6 +33,28 @@ export default function LoginPage() {
     router.refresh()
   }
 
+  type Role = 'admin' | 'moderator' | 'viewer'
+
+  const DEMO_ACCOUNTS: Record<Role, { email: string; password: string }> = {
+    admin: {
+      email: 'admin@test.com',
+      password: 'password123'
+    },
+    moderator: {
+      email: 'moderator@test.com',
+      password: 'password123'
+    },
+    viewer: {
+      email: 'readonly@test.com',
+      password: 'password123'
+    }
+  }
+
+  function populateDemoCredentials(role: Role) {
+    setEmail(DEMO_ACCOUNTS[role].email)
+    setPassword(DEMO_ACCOUNTS[role].password)
+  }
+
   return (
     <div>
       <h1>Login</h1>
@@ -58,6 +80,11 @@ export default function LoginPage() {
 
         {error && <p>{error}</p>}
       </form>
+
+      <h1>Demo Accounts</h1>
+      <button onClick={() => populateDemoCredentials('admin')}>Use Demo Admin</button>
+      <button onClick={() => populateDemoCredentials('moderator')}>Use Demo Moderator</button>
+      <button onClick={() => populateDemoCredentials('viewer')}>Use Demo Viewer</button>
     </div>
   )
 }

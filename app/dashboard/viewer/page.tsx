@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import LogoutButton from '@/app/components/logoutButton'
 
-export default async function DashboardEntry() {
+export default async function ViewerPage() {
   const supabase = await createServerSupabaseClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -14,16 +15,14 @@ export default async function DashboardEntry() {
     .eq('id', user.id)
     .single()
 
-  if (!profile) redirect('/login')
-
-  switch (profile.role) {
-    case 'admin':
-      redirect('/dashboard/admin')
-    case 'moderator':
-      redirect('/dashboard/moderator')
-    case 'viewer':
-      redirect('/dashboard/viewer')
-    default:
-      redirect('/login')
+  if (profile?.role !== 'viewer') {
+    redirect('/dashboard')
   }
+
+  return (
+      <div>
+        <h1>Viewer Dashboard</h1>
+        <LogoutButton />
+      </div>
+    )
 }

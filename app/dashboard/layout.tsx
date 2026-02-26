@@ -8,5 +8,10 @@ export default async function DashboardLayout({children,}: {children: React.Reac
 
   if (!user) redirect('/login')
 
+  const { data: profile, error } = await supabase.from('profiles')
+    .select('role').eq('id', user.id).single()
+  
+  if (!profile || error) redirect('/login')
+
   return <>{children}</>
 }
