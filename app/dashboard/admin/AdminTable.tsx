@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import { useContent } from '@/lib/queries/content'
+import Link from 'next/link'
 
 export default function AdminTable() {
   const [status, setStatus] = useState('all')
   const { data, isLoading, error } = useContent(status)
 
   if (isLoading) return <p>Loading...</p>
-  
+
   if (error) return <p>Error loading content</p>
 
   return (
@@ -32,7 +33,11 @@ export default function AdminTable() {
         <tbody>
           {data?.map(item => (
             <tr key={item.id}>
-              <td>{item.title}</td>
+              <td>
+                <Link href={`/dashboard/admin/content/${item.id}`}>
+                  {item.title}
+                </Link>
+              </td>
               <td>{item.status}</td>
               <td>{item.submitted_by}</td>
               <td>{new Date(item.created_at).toLocaleString()}</td>

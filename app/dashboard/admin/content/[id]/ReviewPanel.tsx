@@ -57,19 +57,12 @@ export default function ReviewPanel({ content, userId }: { content: Content, use
       <p>{content.body}</p>
 
       {content.status === 'pending' && (
-        <div style={{ marginTop: '1rem' }}>
-          <button
-            onClick={() => mutation.mutate('approved')}
-            disabled={mutation.isPending}
-          >
+        <div>
+          <button onClick={() => mutation.mutate('approved')} disabled={mutation.isPending}>
             Approve
           </button>
 
-          <button
-            onClick={() => mutation.mutate('rejected')}
-            disabled={mutation.isPending}
-            style={{ marginLeft: '1rem' }}
-          >
+          <button onClick={() => mutation.mutate('rejected')} disabled={mutation.isPending}>
             Reject
           </button>
         </div>

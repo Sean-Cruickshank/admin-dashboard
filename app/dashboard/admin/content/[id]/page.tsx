@@ -2,7 +2,9 @@ import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import ReviewPanel from './ReviewPanel'
 
-export default async function ReviewPage({ params }: { params: { id: string } }) {
+export default async function ReviewPage(props: { params: Promise<{ id: string }> }) {
+  
+  const { id } = await props.params
   const supabase = await createServerSupabaseClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -15,24 +17,15 @@ export default async function ReviewPage({ params }: { params: { id: string } })
     .eq('id', user.id)
     .single()
 
-  if (profile?.role !== 'admin') {
-    redirect('/dashboard')
-  }
+  if (profile?.role !== 'admin') redirect('/dashboard')
 
   const { data: content, error } = await supabase
     .from('content')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
-  if (error || !content) {
-    redirect('/dashboard/admin')
-  }
+  if (error || !content) redirect('/dashboard/admin')
 
-  return (
-    <ReviewPanel
-      content={content}
-      userId={user.id}
-    />
-  )
+  return <ReviewPanel content={content} userId={user.id} />
 }
