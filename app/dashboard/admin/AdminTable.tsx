@@ -8,6 +8,7 @@ export default function AdminTable() {
   const { data, isLoading, error } = useContent(status)
 
   if (isLoading) return <p>Loading...</p>
+  
   if (error) return <p>Error loading content</p>
 
   return (
