@@ -13,7 +13,7 @@ type Content = {
   created_at: string
 }
 
-export default function ReviewPanel({ content, userId }: { content: Content, userId: string }) {
+export default function ReviewPanel({ content, userId } : { content: Content, userId: string }) {
   const supabase = createSupabaseBrowserClient()
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -35,11 +35,11 @@ export default function ReviewPanel({ content, userId }: { content: Content, use
           performed_by: userId,
         })
 
-      if (auditError) throw auditError
+      if (auditError) throw(auditError)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['content'] })
-      router.push('/dashboard/admin')
+      router.push('/dashboard')
       router.refresh()
     },
   })

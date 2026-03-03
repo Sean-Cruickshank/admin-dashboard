@@ -17,7 +17,7 @@ export default async function ReviewPage(props: { params: Promise<{ id: string }
     .eq('id', user.id)
     .single()
 
-  if (profile?.role !== 'admin') redirect('/dashboard')
+  if (!['admin', 'moderator'].includes(profile?.role)) redirect('/dashboard')
 
   const { data: content, error } = await supabase
     .from('content')
@@ -25,7 +25,7 @@ export default async function ReviewPage(props: { params: Promise<{ id: string }
     .eq('id', id)
     .single()
 
-  if (error || !content) redirect('/dashboard/admin')
+  if (error || !content) redirect('/dashboard')
 
   return <ReviewPanel content={content} userId={user.id} />
 }

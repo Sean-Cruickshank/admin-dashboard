@@ -34,7 +34,7 @@ export default function AdminTable() {
           {data?.map(item => (
             <tr key={item.id}>
               <td>
-                <Link href={`/dashboard/admin/content/${item.id}`}>
+                <Link href={`/dashboard/content/${item.id}`}>
                   {item.title}
                 </Link>
               </td>
