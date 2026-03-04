@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { useContent } from '@/lib/queries/content'
 import Link from 'next/link'
 
-export default function AdminTable() {
+export default function ContentTable({ id } : { id: string }) {
   const [status, setStatus] = useState('all')
-  const { data, isLoading, error } = useContent(status)
+  const { data, isLoading, error } = useContent(status, id)
 
   if (isLoading) return <p>Loading...</p>
 

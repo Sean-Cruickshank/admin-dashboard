@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import LogoutButton from '@/app/components/logoutButton'
+import ContentTable from '@/app/components/ContentTable'
 
 export default async function ModeratorPage() {
   const supabase = await createServerSupabaseClient()
@@ -20,9 +21,10 @@ export default async function ModeratorPage() {
   }
 
   return (
-      <div>
-        <h1>Moderator Dashboard</h1>
-        <LogoutButton />
-      </div>
-    )
+    <div>
+      <h1>Moderator Dashboard</h1>
+      <ContentTable id={user.id} />
+      <LogoutButton />
+    </div>
+  )
 }

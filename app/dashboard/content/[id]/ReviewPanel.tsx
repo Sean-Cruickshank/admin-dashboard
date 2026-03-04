@@ -25,7 +25,10 @@ export default function ReviewPanel({ content, userId } : { content: Content, us
         .update({ status: action })
         .eq('id', content.id)
 
-      if (updateError) throw updateError
+      if (updateError) {
+        console.error(updateError)
+        throw updateError
+      }
 
       const { error: auditError } = await supabase
         .from('content_audit_logs')
@@ -35,7 +38,10 @@ export default function ReviewPanel({ content, userId } : { content: Content, us
           performed_by: userId,
         })
 
-      if (auditError) throw(auditError)
+      if (auditError) {
+        console.error(auditError)
+        throw(auditError)
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['content'] })

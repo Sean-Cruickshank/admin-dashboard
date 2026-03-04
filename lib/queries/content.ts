@@ -29,9 +29,9 @@ export async function fetchContentByStatus(status?: string) {
   return data as Content[]
 }
 
-export function useContent(status: string) {
+export function useContent(status: string, id: string) {
   return useQuery({
-    queryKey: ['content', status],
+    queryKey: ['content', status, id],
     queryFn: () => fetchContentByStatus(status),
   })
 }

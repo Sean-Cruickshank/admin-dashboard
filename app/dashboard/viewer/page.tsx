@@ -20,9 +20,9 @@ export default async function ViewerPage() {
   }
 
   return (
-      <div>
-        <h1>Viewer Dashboard</h1>
-        <LogoutButton />
-      </div>
-    )
+    <div>
+      <h1>Viewer Dashboard</h1>
+      <LogoutButton />
+    </div>
+  )
 }
