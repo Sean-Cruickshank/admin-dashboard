@@ -23,7 +23,7 @@ export default async function AdminPage() {
   return (
     <div>
       <h1>Admin Dashboard</h1>
-      <ContentTable id={user.id} />
+      <ContentTable userId={user.id} mode={'all'} />
       <LogoutButton />
     </div>
   )
