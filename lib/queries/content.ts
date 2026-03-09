@@ -10,13 +10,21 @@ type Content = {
   created_at: string
 }
 
-export async function fetchContentByStatus(status?: string) {
+export async function fetchContentByStatus(status: string, userId: string, mode: 'all' | 'approved' | 'user') {
   const supabase = createSupabaseBrowserClient()
 
   let query = supabase
     .from('content')
     .select('*')
     .order('created_at', { ascending: false })
+
+  if (mode === 'user') {
+    query = query.eq('submitted_by', userId)
+  }
+
+  if (mode === 'approved') {
+    query = query.eq('status', 'approved')
+  }
 
   if (status && status !== 'all') {
     query = query.eq('status', status)
@@ -29,9 +37,9 @@ export async function fetchContentByStatus(status?: string) {
   return data as Content[]
 }
 
-export function useContent(status: string, id: string) {
+export function useContent(status: string, userId: string, mode: 'all' | 'approved' | 'user') {
   return useQuery({
-    queryKey: ['content', status, id],
-    queryFn: () => fetchContentByStatus(status),
+    queryKey: ['content', status, userId, mode],
+    queryFn: () => fetchContentByStatus(status, userId, mode),
   })
 }

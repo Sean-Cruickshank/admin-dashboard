@@ -23,7 +23,7 @@ export default async function ModeratorPage() {
   return (
     <div>
       <h1>Moderator Dashboard</h1>
-      <ContentTable id={user.id} />
+      <ContentTable userId={user.id} mode={'all'} />
       <LogoutButton />
     </div>
   )

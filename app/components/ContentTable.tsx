@@ -4,9 +4,14 @@ import { useState } from 'react'
 import { useContent } from '@/lib/queries/content'
 import Link from 'next/link'
 
-export default function ContentTable({ id } : { id: string }) {
+type ContentTableProps = {
+  userId: string,
+  mode: 'all' | 'user' | 'approved'
+}
+
+export default function ContentTable({ userId, mode } : ContentTableProps) {
   const [status, setStatus] = useState('all')
-  const { data, isLoading, error } = useContent(status, id)
+  const { data, isLoading, error } = useContent(status, userId, mode)
 
   if (isLoading) return <p>Loading...</p>
 
@@ -14,19 +19,19 @@ export default function ContentTable({ id } : { id: string }) {
 
   return (
     <div>
-      <div>
+      {(mode === 'all' || mode === 'user') && <div>
         <button onClick={() => setStatus('all')}>All</button>
         <button onClick={() => setStatus('pending')}>Pending</button>
         <button onClick={() => setStatus('approved')}>Approved</button>
         <button onClick={() => setStatus('rejected')}>Rejected</button>
-      </div>
+      </div>}
 
       <table>
         <thead>
           <tr>
             <th>Title</th>
-            <th>Status</th>
-            <th>Submitted By</th>
+            {mode !== 'approved' && <th>Status</th>}
+            {mode !== 'user' && <th>Submitted By</th>}
             <th>Created</th>
           </tr>
         </thead>
@@ -38,8 +43,8 @@ export default function ContentTable({ id } : { id: string }) {
                   {item.title}
                 </Link>
               </td>
-              <td>{item.status}</td>
-              <td>{item.submitted_by}</td>
+              {mode !== 'approved' && <td>{item.status}</td>}
+              {mode !== 'user' && <td>{item.submitted_by}</td>}
               <td>{new Date(item.created_at).toLocaleString()}</td>
             </tr>
           ))}
