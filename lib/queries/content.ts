@@ -1,14 +1,6 @@
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
-
-type Content = {
-  id: string
-  submitted_by: string
-  title: string
-  body: string
-  status: string
-  created_at: string
-}
+import { Content } from '@/app/types/Content'
 
 export async function fetchContentByStatus(status: string, userId: string, mode: 'all' | 'approved' | 'user') {
   const supabase = createSupabaseBrowserClient()
