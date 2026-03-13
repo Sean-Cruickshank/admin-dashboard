@@ -17,6 +17,8 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
 
   if (error) return <p>Error loading content</p>
 
+  console.log(data)
+
   return (
     <div>
       {(mode === 'all' || mode === 'user') && <div>
@@ -44,7 +46,7 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
                 </Link>
               </td>
               {mode !== 'approved' && <td>{item.status}</td>}
-              {mode !== 'user' && <td>{item.profiles?.username}</td>}
+              {mode !== 'user' && <td>{item.profiles?.username || 'Unknown'}</td>}
               <td>{new Date(item.created_at).toLocaleString()}</td>
             </tr>
           ))}

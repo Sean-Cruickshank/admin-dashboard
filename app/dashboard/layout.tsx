@@ -1,7 +1,7 @@
-import { requireRole } from '@/lib/auth/requireRole'
+import { requireUser } from '@/lib/auth/requireUser'
 
-export default async function DashboardLayout({children,}: {children: React.ReactNode}) {
-  await requireRole(['admin', 'moderator', 'viewer'])
+export default async function DashboardLayout({children}: {children: React.ReactNode}) {
+  await requireUser()
 
   return <>{children}</>
 }

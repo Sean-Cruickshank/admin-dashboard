@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
-import { requireRole } from '@/lib/auth/requireRole'
+import { requireUser } from '@/lib/auth/requireUser'
 
 export default async function DashboardEntry() {
-  const { profile } = await requireRole(['admin', 'moderator', 'viewer'])
+  const { profile } = await requireUser()
 
   switch (profile.role) {
     case 'admin':

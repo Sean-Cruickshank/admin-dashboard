@@ -1,9 +1,9 @@
 import LogoutButton from '@/app/components/logoutButton'
 import ContentTable from '@/app/components/ContentTable'
-import { requireRole } from '@/lib/auth/requireRole'
+import { requireUser } from '@/lib/auth/requireUser'
 
 export default async function ViewerPage() {
-  const { user } = await requireRole(['admin', 'moderator', 'viewer'])
+  const { user } = await requireUser()
 
   return (
     <div>
