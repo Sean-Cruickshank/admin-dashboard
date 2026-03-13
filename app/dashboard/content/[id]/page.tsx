@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import ReviewPanel from './ReviewPanel'
+import ContentPanel from '@/app/components/ContentPanel'
 
 export default async function ReviewPage(props: { params: Promise<{ id: string }> }) {
   
@@ -17,15 +17,15 @@ export default async function ReviewPage(props: { params: Promise<{ id: string }
     .eq('id', user.id)
     .single()
 
-  if (!['admin', 'moderator'].includes(profile?.role)) redirect('/dashboard')
+  if (!profile || !['admin', 'moderator'].includes(profile?.role)) redirect('/dashboard')
 
   const { data: content, error } = await supabase
     .from('content')
-    .select('*')
+    .select('*, profiles!content_submitted_by_fkey (username)')
     .eq('id', id)
     .single()
 
   if (error || !content) redirect('/dashboard')
 
-  return <ReviewPanel content={content} userId={user.id} />
+  return <ContentPanel content={content} userId={user.id} role={profile?.role} />
 }

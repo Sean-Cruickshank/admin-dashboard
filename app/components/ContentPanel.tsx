@@ -1,19 +1,21 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
+import { Content as C } from '../types/Content'
 
-type Content = {
-  id: string
-  title: string
-  body: string
-  status: string
-  submitted_by: string
-  created_at: string
+type Content = C & {
+  profiles: { username: string } | null
 }
 
-export default function ReviewPanel({ content, userId } : { content: Content, userId: string }) {
+type ContentPanelProps = {
+  content: Content,
+  userId: string,
+  role: string
+}
+
+export default function ContentPanel({ content, userId, role } : ContentPanelProps) {
   const supabase = createSupabaseBrowserClient()
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -55,7 +57,7 @@ export default function ReviewPanel({ content, userId } : { content: Content, us
       <h1>{content.title}</h1>
 
       <p><strong>Status:</strong> {content.status}</p>
-      <p><strong>Submitted By:</strong> {content.submitted_by}</p>
+      <p><strong>Submitted By:</strong> {content.profiles?.username}</p>
       <p><strong>Created:</strong> {new Date(content.created_at).toLocaleString()}</p>
 
       <hr />
@@ -73,6 +75,11 @@ export default function ReviewPanel({ content, userId } : { content: Content, us
           </button>
         </div>
       )}
+
+      {role === 'admin' && <button
+        onClick={() => redirect(`/dashboard/content/${content.id}/audit`)}
+        >View Audit Logs
+      </button>}
     </div>
   )
 }
