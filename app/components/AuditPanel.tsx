@@ -2,14 +2,12 @@
 
 import { redirect } from "next/navigation"
 import { Content } from "../types/Content"
+import { Database } from '@/lib/database.types'
 
-type Logs = {
-  id: string,
-  content_id: string,
-  action: string,
-  performed_by: string,
-  performed_at: string,
-  notes: string
+type AuditLog = Database['public']['Tables']['content_audit_logs']['Row']
+
+type Logs = AuditLog & {
+  profiles: { username: string } | null
 }
 
 type ContentPreview = Pick<Content, 'id' | 'title'>
@@ -22,7 +20,7 @@ export default function AuditPanel({ logs, content } : { logs: Logs[], content: 
       <h2>Audit History</h2>
       {logs.map(log => (
         <p key={log.id}>
-          {log.action} by {log.performed_by} at {log.performed_at}
+          {log.action} by {log.profiles?.username} at {log.performed_at}
         </p>
       ))}
 

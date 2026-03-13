@@ -1,8 +1,7 @@
-export type Content = {
-  id: string
-  title: string
-  body: string
-  status: string
-  submitted_by: string
-  created_at: string
-}
+import { Database } from '@/lib/database.types'
+
+type ContentSchema = Database['public']['Tables']['content']['Row']
+
+export type Content = Pick<ContentSchema,
+  'id' | 'title' | 'body' | 'status' | 'submitted_by' | 'created_at'
+>

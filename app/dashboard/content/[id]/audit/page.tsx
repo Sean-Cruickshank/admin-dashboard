@@ -27,7 +27,7 @@ export default async function AuditPage(props: { params: Promise<{ id: string }>
 
   const { data: logs, error } = await supabase
     .from('content_audit_logs')
-    .select('*')
+    .select(`*, profiles (username)`)
     .eq('content_id', id)
     .order('performed_at', { ascending: false })
 

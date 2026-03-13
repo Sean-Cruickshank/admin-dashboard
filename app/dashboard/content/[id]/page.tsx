@@ -17,11 +17,11 @@ export default async function ReviewPage(props: { params: Promise<{ id: string }
     .eq('id', user.id)
     .single()
 
-  if (!['admin', 'moderator'].includes(profile?.role)) redirect('/dashboard')
+  if (!profile || !['admin', 'moderator'].includes(profile?.role)) redirect('/dashboard')
 
   const { data: content, error } = await supabase
     .from('content')
-    .select('*')
+    .select('*, profiles!content_submitted_by_fkey (username)')
     .eq('id', id)
     .single()
 

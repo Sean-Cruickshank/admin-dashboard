@@ -1,13 +1,17 @@
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
-import { Content } from '@/app/types/Content'
+import { Content as C } from '@/app/types/Content'
+
+type Content = C & {
+  profiles: { username: string } | null
+}
 
 export async function fetchContentByStatus(status: string, userId: string, mode: 'all' | 'approved' | 'user') {
   const supabase = createSupabaseBrowserClient()
 
   let query = supabase
     .from('content')
-    .select('*')
+    .select('*, profiles!content_submitted_by_fkey (username)')
     .order('created_at', { ascending: false })
 
   if (mode === 'user') {

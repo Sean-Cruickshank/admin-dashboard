@@ -3,7 +3,11 @@
 import { redirect, useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
-import { Content } from '../types/Content'
+import { Content as C } from '../types/Content'
+
+type Content = C & {
+  profiles: { username: string } | null
+}
 
 type ContentPanelProps = {
   content: Content,
@@ -53,7 +57,7 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
       <h1>{content.title}</h1>
 
       <p><strong>Status:</strong> {content.status}</p>
-      <p><strong>Submitted By:</strong> {content.submitted_by}</p>
+      <p><strong>Submitted By:</strong> {content.profiles?.username}</p>
       <p><strong>Created:</strong> {new Date(content.created_at).toLocaleString()}</p>
 
       <hr />
