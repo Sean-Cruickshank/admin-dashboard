@@ -1,6 +1,6 @@
 'use client'
 
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { Content } from "../types/Content"
 import { Database } from '@/lib/database.types'
 
@@ -13,8 +13,13 @@ type Logs = AuditLog & {
 type ContentPreview = Pick<Content, 'id' | 'title'>
 
 export default function AuditPanel({ logs, content } : { logs: Logs[], content: ContentPreview }) {
+  
+  const router = useRouter()
+
   return (
     <div>
+      <button onClick={() => router.back()}>Back</button>
+
       <h1>{content.title}</h1>
 
       <h2>Audit History</h2>
@@ -32,7 +37,6 @@ export default function AuditPanel({ logs, content } : { logs: Logs[], content: 
         </div>
       ))}
 
-      <button onClick={() => redirect(`/dashboard/content/${content.id}`)}>Back</button>
     </div>
   )
 }

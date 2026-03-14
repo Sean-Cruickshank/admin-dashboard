@@ -58,6 +58,7 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
 
   return (
     <div>
+      <button onClick={() => router.back()}>Back</button>
       <h1>{content.title}</h1>
 
       <p><strong>Status:</strong> {content.status}</p>
@@ -94,7 +95,7 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
       )}
 
       {role === 'admin' && <button
-        onClick={() => redirect(`/dashboard/content/${content.id}/audit`)}
+        onClick={() => router.push(`/dashboard/content/${content.id}/audit`)}
         >View Audit Logs
       </button>}
     </div>
