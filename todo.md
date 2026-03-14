@@ -6,5 +6,4 @@ UI
 - Display username in content tables and content viewer insead of user id
 - Display statistics for user content table
 
-Audit View
-- Use joins to replace ids with usernames ??
+- Allow viewers to see content details ?

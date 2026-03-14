@@ -4,6 +4,7 @@ import { redirect, useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 import { Content as C } from '../types/Content'
+import { useState } from 'react'
 
 type Content = C & {
   profiles: { username: string } | null
@@ -20,8 +21,10 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
   const router = useRouter()
   const queryClient = useQueryClient()
 
+  const [notes, setNotes] = useState('')
+
   const mutation = useMutation({
-    mutationFn: async (action: 'approved' | 'rejected') => {
+    mutationFn: async ({action, notes} : {action: "approved" | "rejected", notes: string}) => {
       const { error: updateError } = await supabase
         .from('content')
         .update({ status: action })
@@ -38,6 +41,7 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
           content_id: content.id,
           action,
           performed_by: userId,
+          notes: notes.trim() || null
         })
 
       if (auditError) {
@@ -66,11 +70,24 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
 
       {content.status === 'pending' && (
         <div>
-          <button onClick={() => mutation.mutate('approved')} disabled={mutation.isPending}>
+          <label htmlFor='moderation-notes'>Notes:</label>
+          <textarea
+            id='moderation-notes'
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+            disabled={mutation.isPending}
+            rows={4}
+          />
+
+          <button
+            onClick={() => mutation.mutate({action: 'approved', notes})}
+            disabled={mutation.isPending}>
             Approve
           </button>
 
-          <button onClick={() => mutation.mutate('rejected')} disabled={mutation.isPending}>
+          <button
+            onClick={() => mutation.mutate({action: 'rejected', notes})}
+            disabled={mutation.isPending}>
             Reject
           </button>
         </div>
