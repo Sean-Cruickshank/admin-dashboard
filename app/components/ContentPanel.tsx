@@ -1,10 +1,11 @@
 'use client'
 
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 import { Content as C } from '../types/Content'
 import { useState } from 'react'
+import Link from 'next/link'
 
 type Content = C & {
   profiles: { username: string } | null
@@ -22,9 +23,16 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
   const queryClient = useQueryClient()
 
   const [notes, setNotes] = useState('')
+  const [notesError, setNotesError] = useState<string | null>(null)
 
   const mutation = useMutation({
     mutationFn: async ({action, notes} : {action: "approved" | "rejected", notes: string}) => {
+      const isOverride = content.status !== 'pending' && content.status !== action
+
+      if (isOverride && !notes.trim()) {
+        throw new Error('Notes are required when overriding a previous decision.')
+      }
+      
       const { error: updateError } = await supabase
         .from('content')
         .update({ status: action })
@@ -56,6 +64,18 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
     },
   })
 
+  function handleStatus(action: 'approved' | 'rejected') {
+    const isOverride = content.status !== 'pending' && content.status !== action
+
+    if (isOverride && !notes.trim()) {
+      setNotesError('Notes are required when overriding a previous decision.')
+      return
+    }
+
+    setNotesError(null)
+    mutation.mutate({ action, notes: notes.trim() })
+  }
+
   return (
     <div>
       <button onClick={() => router.back()}>Back</button>
@@ -69,7 +89,7 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
 
       <p>{content.body}</p>
 
-      {content.status === 'pending' && (
+      {(content.status === 'pending' || role === 'admin') && (
         <div>
           <label htmlFor='moderation-notes'>Notes:</label>
           <textarea
@@ -79,25 +99,27 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
             disabled={mutation.isPending}
             rows={4}
           />
+          {notesError && <p>{notesError}</p>}
 
           <button
-            onClick={() => mutation.mutate({action: 'approved', notes})}
-            disabled={mutation.isPending}>
+            onClick={() => handleStatus('approved')}
+            disabled={mutation.isPending || content.status === 'approved'}>
             Approve
           </button>
 
           <button
-            onClick={() => mutation.mutate({action: 'rejected', notes})}
-            disabled={mutation.isPending}>
+            onClick={() => handleStatus('rejected')}
+            disabled={mutation.isPending || content.status === 'rejected'}>
             Reject
           </button>
         </div>
       )}
 
-      {role === 'admin' && <button
-        onClick={() => router.push(`/dashboard/content/${content.id}/audit`)}
-        >View Audit Logs
-      </button>}
+      {role === 'admin' &&
+        <Link href={`/dashboard/content/${content.id}/audit`}>
+          View Audit Logs
+        </Link>
+      }
     </div>
   )
 }
