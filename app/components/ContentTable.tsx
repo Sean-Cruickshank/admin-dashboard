@@ -6,18 +6,17 @@ import Link from 'next/link'
 
 type ContentTableProps = {
   userId: string,
-  mode: 'all' | 'user' | 'approved'
+  mode: 'all' | 'user' | 'approved',
+  page: number
 }
 
-export default function ContentTable({ userId, mode } : ContentTableProps) {
+export default function ContentTable({ userId, mode, page } : ContentTableProps) {
   const [status, setStatus] = useState('all')
-  const { data, isLoading, error } = useContent(status, userId, mode)
+  const { data, isLoading, error } = useContent(status, userId, mode, page)
 
   if (isLoading) return <p>Loading...</p>
 
   if (error) return <p>Error loading content</p>
-
-  console.log(data)
 
   return (
     <div>
@@ -38,7 +37,7 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
           </tr>
         </thead>
         <tbody>
-          {data?.map(item => (
+          {data?.data.map(item => (
             <tr key={item.id}>
               <td>
                 <Link href={`/dashboard/content/${item.id}`}>

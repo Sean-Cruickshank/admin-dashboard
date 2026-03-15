@@ -6,13 +6,23 @@ type Content = C & {
   profiles: { username: string } | null
 }
 
-export async function fetchContentByStatus(status: string, userId: string, mode: 'all' | 'approved' | 'user') {
+export async function fetchContentByStatus(
+  status: string,
+  userId: string,
+  mode: 'all' | 'approved' | 'user',
+  page: number
+) {
   const supabase = createSupabaseBrowserClient()
+
+  const PAGE_SIZE = 3
+  const from = (page - 1) * PAGE_SIZE
+  const to = from + PAGE_SIZE - 1
 
   let query = supabase
     .from('content')
-    .select('*, profiles!content_submitted_by_fkey (username)')
+    .select('*, profiles!content_submitted_by_fkey (username)', { count: 'exact'})
     .order('created_at', { ascending: false })
+    .range(from, to)
 
   if (mode === 'user') {
     query = query.eq('submitted_by', userId)
@@ -26,16 +36,25 @@ export async function fetchContentByStatus(status: string, userId: string, mode:
     query = query.eq('status', status)
   }
 
-  const { data, error } = await query
+  const { data, error, count } = await query
+  console.log(count)
 
   if (error) throw new Error(error.message)
 
-  return data as Content[]
+  return {
+    data: data as Content[],
+    count: count ?? 0
+  }
 }
 
-export function useContent(status: string, userId: string, mode: 'all' | 'approved' | 'user') {
+export function useContent(
+  status: string,
+  userId: string,
+  mode: 'all' | 'approved' | 'user',
+  page: number
+) {
   return useQuery({
-    queryKey: ['content', status, userId, mode],
-    queryFn: () => fetchContentByStatus(status, userId, mode),
+    queryKey: ['content', status, userId, mode, page],
+    queryFn: () => fetchContentByStatus(status, userId, mode, page),
   })
 }
