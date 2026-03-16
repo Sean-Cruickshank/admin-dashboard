@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { useContent } from '@/lib/queries/content'
 import Link from 'next/link'
 import { PAGE_SIZE } from '@/lib/constants/pagination'
@@ -8,22 +7,32 @@ import { usePathname, useSearchParams } from 'next/navigation'
 
 type ContentTableProps = {
   userId: string,
-  mode: 'all' | 'user' | 'approved',
-  page: number
+  mode: 'all' | 'user' | 'approved'
 }
 
-export default function ContentTable({ userId, mode, page } : ContentTableProps) {
-  const [status, setStatus] = useState('all')
-  const { data, isLoading, error } = useContent(status, userId, mode, page)
+type Status = 'all' | 'pending' | 'approved' | 'rejected'
+
+export default function ContentTable({ userId, mode } : ContentTableProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  
+  const pageParamKey = `${mode}Page`
+  const statusParamKey = `${mode}Status`
+  
+  const rawPage = Number(searchParams.get(pageParamKey))
+  const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1
+  
+  const rawStatus = searchParams.get(statusParamKey)
+  const status: Status = rawStatus === 'pending' || rawStatus === 'approved' || rawStatus === 'rejected'
+    ? rawStatus
+    : 'all'
+
+  const { data, isLoading, error } = useContent(status, userId, mode, page)
 
   const rows = data?.data ?? []
   const count = data?.count ?? 0
   const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE))
-
-  const pageParamKey = `${mode}Page`
-
+  
   const hasPreviousPage = page > 1
   const hasNextPage = page < totalPages
   
@@ -38,6 +47,18 @@ export default function ContentTable({ userId, mode, page } : ContentTableProps)
     return query ? `${pathname}?${query}` : pathname
   }
 
+  function buildStatusHref( newStatus: Status) {
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete(pageParamKey)
+    if (newStatus === 'all') {
+      params.delete(statusParamKey)
+    } else {
+      params.set(statusParamKey, newStatus)
+    }
+    const query = params.toString()
+    return query ? `${pathname}?${query}` : pathname
+  }
+
   if (isLoading) return <p>Loading...</p>
 
   if (error) return <p>Error loading content</p>
@@ -45,10 +66,10 @@ export default function ContentTable({ userId, mode, page } : ContentTableProps)
   return (
     <div>
       {(mode === 'all' || mode === 'user') && <div>
-        <button onClick={() => setStatus('all')}>All</button>
-        <button onClick={() => setStatus('pending')}>Pending</button>
-        <button onClick={() => setStatus('approved')}>Approved</button>
-        <button onClick={() => setStatus('rejected')}>Rejected</button>
+        <Link href={buildStatusHref('all')}>All</Link>
+        <Link href={buildStatusHref('pending')}>Pending</Link>
+        <Link href={buildStatusHref('approved')}>Approved</Link>
+        <Link href={buildStatusHref('rejected')}>Rejected</Link>
       </div>}
 
       <table>
