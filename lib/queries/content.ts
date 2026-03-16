@@ -1,6 +1,7 @@
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
 import { Content as C } from '@/app/types/Content'
+import { PAGE_SIZE } from '../constants/pagination'
 
 type Content = C & {
   profiles: { username: string } | null
@@ -14,7 +15,6 @@ export async function fetchContentByStatus(
 ) {
   const supabase = createSupabaseBrowserClient()
 
-  const PAGE_SIZE = 3
   const from = (page - 1) * PAGE_SIZE
   const to = from + PAGE_SIZE - 1
 
@@ -37,7 +37,6 @@ export async function fetchContentByStatus(
   }
 
   const { data, error, count } = await query
-  console.log(count)
 
   if (error) throw new Error(error.message)
 

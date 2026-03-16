@@ -4,19 +4,19 @@ import ContentTable from '../../components/ContentTable'
 import { requireRole } from '@/lib/auth/requireRole'
 
 type AdminDashboardProps = {
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ allPage?: string }>
 }
 
 export default async function AdminDashboard({ searchParams } : AdminDashboardProps) {
-  const { profile, user } = await requireRole(['admin'])
+  const { user } = await requireRole(['admin'])
 
   const params = await searchParams
-  const page = Math.max(1, Number(params.page)) || 1
+  const allPage = Math.max(1, Number(params.allPage)) || 1
 
   return (
     <div>
       <h1>Admin Dashboard</h1>
-      <ContentTable userId={user.id} mode={'all'} page={page} />
+      <ContentTable userId={user.id} mode={'all'} page={allPage} />
       <LogoutButton />
     </div>
   )
