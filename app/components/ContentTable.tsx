@@ -1,16 +1,11 @@
 'use client'
 
-import { useContent } from '@/lib/queries/content'
 import Link from 'next/link'
-import { PAGE_SIZE } from '@/lib/constants/pagination'
 import { usePathname, useSearchParams } from 'next/navigation'
+import { useContent } from '@/lib/queries/content'
+import { Status, Mode } from '@/app/types/Content'
 
-type ContentTableProps = {
-  userId: string,
-  mode: 'all' | 'user' | 'approved'
-}
-
-type Status = 'all' | 'pending' | 'approved' | 'rejected'
+type ContentTableProps = { userId: string, mode: Mode }
 
 export default function ContentTable({ userId, mode } : ContentTableProps) {
   const pathname = usePathname()
@@ -31,10 +26,11 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
 
   const rows = data?.data ?? []
   const count = data?.count ?? 0
-  const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE))
+  const currentPage = data?.currentPage ?? page
+  const totalPages = data?.totalPages ?? 1
   
-  const hasPreviousPage = page > 1
-  const hasNextPage = page < totalPages
+  const hasPreviousPage = currentPage > 1
+  const hasNextPage = currentPage < totalPages
   
   function buildPageHref( newPage: number ) {
     const params = new URLSearchParams(searchParams.toString())
@@ -59,6 +55,8 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
     return query ? `${pathname}?${query}` : pathname
   }
 
+  console.log(rows)
+
   if (isLoading) return <p>Loading...</p>
 
   if (error) return <p>Error loading content</p>
@@ -82,30 +80,36 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
           </tr>
         </thead>
         <tbody>
-          {rows.map(item => (
-            <tr key={item.id}>
-              <td>
-                <Link href={`/dashboard/content/${item.id}`}>
-                  {item.title}
-                </Link>
-              </td>
-              {mode !== 'approved' && <td>{item.status}</td>}
-              {mode !== 'user' && <td>{item.profiles?.username || 'Unknown'}</td>}
-              <td>{new Date(item.created_at).toLocaleString()}</td>
+          {rows.length > 0 ? (
+            rows.map(item => (
+              <tr key={item.id}>
+                <td>
+                  <Link href={`/dashboard/content/${item.id}`}>
+                    {item.title}
+                  </Link>
+                </td>
+                {mode !== 'approved' && <td>{item.status}</td>}
+                {mode !== 'user' && <td>{item.profiles?.username || 'Unknown'}</td>}
+                <td>{new Date(item.created_at).toLocaleString()}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={999}>No content found.</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
       <div>
         {hasPreviousPage
-          ? <Link href={buildPageHref(page - 1)}>Previous</Link>
+          ? <Link href={buildPageHref(currentPage - 1)}>Previous</Link>
           : <span>Previous</span>
         }
 
-        <span>Page {page} of {totalPages}</span>
+        <span>Page {currentPage} of {totalPages} ({count ?? 0} total items)</span>
 
         {hasNextPage
-          ? <Link href={buildPageHref(page + 1)}>Next</Link>
+          ? <Link href={buildPageHref(currentPage + 1)}>Next</Link>
           : <span>Next</span>
         }
       </div>
