@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import AuditPanel from "@/app/components/AuditPanel";
 import { requireRole } from "@/lib/auth/requireRole";
 
-export default async function AuditPage(props: { params: Promise<{ id: string }> }) {
+export default async function ContentAuditPage(props: { params: Promise<{ id: string }> }) {
   
   const { id } = await props.params
   const { supabase } = await requireRole(['admin'])
