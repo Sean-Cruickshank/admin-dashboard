@@ -55,8 +55,6 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
     return query ? `${pathname}?${query}` : pathname
   }
 
-  console.log(rows)
-
   if (isLoading) return <p>Loading...</p>
 
   if (error) return <p>Error loading content</p>

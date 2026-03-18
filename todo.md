@@ -7,3 +7,5 @@ Audit Logs
 - Post creation
 - Post deletion
 - Post expiration
+
+- Rename fetchContentByStatus to fetchContent ???
