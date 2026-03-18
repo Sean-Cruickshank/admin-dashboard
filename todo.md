@@ -1,10 +1,9 @@
-UI
-- Allow approved or rejected posts to still be changed
-- Add a back button on detail view pages
-- Add text field for audit log notes
-- Add pagination for content tables
-- Display username in content tables and content viewer insead of user id
-- Display statistics for user content table
+Global Audit Log
+- Bring in profile (username) and content (title)
+- Pagination
+- Filter by user, action, date (all, 7d, 30d)
 
-Audit View
-- Use joins to replace ids with usernames ??
+Audit Logs
+- Post creation
+- Post deletion
+- Post expiration

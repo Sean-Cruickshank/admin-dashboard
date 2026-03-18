@@ -1,23 +1,11 @@
 import { redirect } from 'next/navigation'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
 import ContentPanel from '@/app/components/ContentPanel'
+import { requireUser } from '@/lib/auth/requireUser'
 
 export default async function ReviewPage(props: { params: Promise<{ id: string }> }) {
   
   const { id } = await props.params
-  const supabase = await createServerSupabaseClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) redirect('/login')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile || !['admin', 'moderator'].includes(profile?.role)) redirect('/dashboard')
+  const { supabase, user, profile } = await requireUser()
 
   const { data: content, error } = await supabase
     .from('content')

@@ -5,3 +5,7 @@ type ContentSchema = Database['public']['Tables']['content']['Row']
 export type Content = Pick<ContentSchema,
   'id' | 'title' | 'body' | 'status' | 'submitted_by' | 'created_at'
 >
+
+export type Status = 'all' | 'pending' | 'approved' | 'rejected'
+
+export type Mode = 'all' | 'user' | 'approved'
