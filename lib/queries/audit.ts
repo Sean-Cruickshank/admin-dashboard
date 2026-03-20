@@ -13,7 +13,7 @@ function getDateCutoff(dateRange: DateRange): string | null {
   return cutoff.toISOString()
 }
 
-async function fetchContentAudit(
+async function fetchAudits(
   userId: string,
   action: Action,
   dateRange: DateRange,
@@ -72,7 +72,7 @@ async function fetchContentAudit(
   }
 }
 
-export function useContentAudit(
+export function useAudit(
   userId: string,
   action: Action,
   dateRange: DateRange,
@@ -80,36 +80,36 @@ export function useContentAudit(
 ) {
   return useQuery({
     queryKey: ['content_audit_logs', userId, action, dateRange, page],
-    queryFn: () => fetchContentAudit(userId, action, dateRange, page),
+    queryFn: () => fetchAudits(userId, action, dateRange, page),
     placeholderData: (previousData) => previousData
   })
 }
 
-type AuditActor = {
+type AuditUser = {
   id: string
   username: string
   role: 'admin' | 'moderator'
 }
 
-async function fetchAuditActors() {
+async function fetchAuditUsers() {
   const supabase = createSupabaseBrowserClient()
 
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, username, role')
+    .select('id, username')
     .in('role', ['admin', 'moderator'])
     .order('role', { ascending: true })
     .order('username', { ascending: true })
 
   if (error) throw new Error(error.message)
 
-  return (data ?? []) as AuditActor[]
+  return (data ?? []) as AuditUser[]
 }
 
-export function useAuditActors() {
+export function useAuditUsers() {
   return useQuery({
     queryKey: ['audit_actors'],
-    queryFn: fetchAuditActors,
+    queryFn: fetchAuditUsers,
     staleTime: 5 * 60 * 1000
   })
 }

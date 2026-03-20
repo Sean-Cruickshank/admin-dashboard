@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuditActors, useContentAudit } from "@/lib/queries/audit";
+import { useAuditUsers, useAudit } from "@/lib/queries/audit";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Action, DateRange } from '@/app/types/Audit'
@@ -27,7 +27,7 @@ export default function AuditTable() {
   const rawPage = Number(searchParams.get('page'))
   const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1
 
-  const { data, isLoading, error } = useContentAudit(userId, action, dateRange, page)
+  const { data, isLoading, error } = useAudit(userId, action, dateRange, page)
 
   const rows = data?.data ?? []
   const count = data?.count ?? 0
@@ -36,6 +36,8 @@ export default function AuditTable() {
   
   const hasPreviousPage = currentPage > 1
   const hasNextPage = currentPage < totalPages
+
+  const { data: users, isLoading: isUsersLoading, error: usersError } = useAuditUsers()
 
   function buildPageHref( newPage: number ) {
     const params = new URLSearchParams(searchParams.toString())
@@ -60,8 +62,6 @@ export default function AuditTable() {
     return query ? `${pathname}?${query}` : pathname
   }
 
-  const { data: actors, isLoading: isActorsLoading, error: actorsError } = useAuditActors()
-
   if (isLoading) return <p>Loading...</p>
 
   if (error) return <p>Error loading audit logs</p>
@@ -71,14 +71,14 @@ export default function AuditTable() {
       <div>
         Filter by User:
         <Link href={buildFilterHref('all', 'userId')}>All</Link>
-        {isActorsLoading ? (
-          <span> Loading users...</span>
-        ) : actorsError ? (
-          <span> Unable to load users</span>
+        {isUsersLoading ? (
+          <span>Loading users...</span>
+        ) : usersError ? (
+          <span>Unable to load users</span>
         ) : (
-          actors?.map(actor => (
-            <Link key={actor.id} href={buildFilterHref(actor.id, 'userId')}>
-              {actor.username}
+          users?.map(user => (
+            <Link key={user.id} href={buildFilterHref(user.id, 'userId')}>
+              {user.username}
             </Link>
           ))
         )}
