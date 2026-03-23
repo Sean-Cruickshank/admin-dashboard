@@ -5,7 +5,7 @@ import { Content as C, Status, Mode } from '@/app/types/Content'
 
 type Content = C & { profiles: { username: string } | null }
 
-export async function fetchContentByStatus(
+export async function fetchContent(
   status: Status,
   userId: string,
   mode: Mode,
@@ -76,7 +76,7 @@ export function useContent(
 ) {
   return useQuery({
     queryKey: ['content', status, userId, mode, page],
-    queryFn: () => fetchContentByStatus(status, userId, mode, page),
+    queryFn: () => fetchContent(status, userId, mode, page),
     placeholderData: (previousData) => previousData
   })
 }
