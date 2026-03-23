@@ -1,4 +1,3 @@
-import LogoutButton from '@/app/components/logoutButton'
 import ContentTable from '../../components/ContentTable'
 import { requireRole } from '@/lib/auth/requireRole'
 import Link from 'next/link'
@@ -11,7 +10,6 @@ export default async function AdminDashboard() {
       <h1>Admin Dashboard</h1>
       <Link href={'/dashboard/admin/audit'}>View Audit History</Link>
       <ContentTable userId={user.id} mode={'all'} />
-      <LogoutButton />
     </div>
   )
 }

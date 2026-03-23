@@ -1,3 +1,15 @@
 html {
   background-color: lightgray;
+}
+
+nav {
+  background-color: #EEE;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  gap: 10px;
+}
+nav p {
+  padding: 0;
+  margin: 0;
 }/*# sourceMappingURL=main.css.map */

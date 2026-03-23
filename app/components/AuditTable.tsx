@@ -4,12 +4,14 @@ import { useAuditUsers, useAudit } from "@/lib/queries/audit";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Action, DateRange } from '@/app/types/Audit'
+import { useRouter } from "next/navigation"
 
 type Filter = 'userId' | 'action' | 'dateRange'
 
 export default function AuditTable() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const router = useRouter()
 
   const rawUserId = searchParams.get('userId')
   const userId = rawUserId ? rawUserId : 'all'
@@ -68,6 +70,7 @@ export default function AuditTable() {
 
   return (
     <div>
+      <button onClick={() => router.back()}>Back</button>
       <div>
         Filter by User:
         <Link href={buildFilterHref('all', 'userId')}>All</Link>

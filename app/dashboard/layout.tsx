@@ -1,7 +1,13 @@
 import { requireUser } from '@/lib/auth/requireUser'
+import Navbar from '@/app/components/Navbar';
 
 export default async function DashboardLayout({children}: {children: React.ReactNode}) {
-  await requireUser()
+  const { profile } = await requireUser()
 
-  return <>{children}</>
+  return (
+    <>
+      <Navbar profile={profile} />
+      <main>{children}</main>
+    </>
+  )
 }
