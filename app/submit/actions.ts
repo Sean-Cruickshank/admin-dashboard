@@ -1,0 +1,92 @@
+'use server'
+
+import { revalidatePath } from 'next/cache'
+import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { contentSubmissionSchema } from '@/lib/validation/contentSubmission'
+import { z } from 'zod'
+
+export type SubmissionState = {
+  success: boolean
+  message: string
+  fieldErrors?: {
+    title?: string[]
+    body?: string[]
+    contentType?: string[]
+  }
+}
+
+export async function submitContent(
+  prevState: SubmissionState,
+  formData: FormData
+): Promise<SubmissionState> {
+  const parsed = contentSubmissionSchema.safeParse({
+    title: formData.get('title'),
+    body: formData.get('body'),
+    contentType: formData.get('contentType'),
+  })
+
+  if (!parsed.success) {
+    const flattened = z.flattenError(parsed.error)
+
+    return {
+      success: false,
+      message: 'Please fix the form errors and try again.',
+      fieldErrors: {
+        title: flattened.fieldErrors.title,
+        body: flattened.fieldErrors.body,
+        contentType: flattened.fieldErrors.contentType,
+      },
+    }
+  }
+
+  const supabase = await createServerSupabaseClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+
+  let submittedBy: string | null = null
+  let submittedSource = 'public'
+  let submittedLabel = 'Public User'
+
+  if (user) {
+    submittedBy = user.id
+    submittedSource = 'authenticated'
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('id', user.id)
+      .single()
+
+    submittedLabel = profile?.username ?? 'Authenticated User'
+  }
+
+  const { error } = await supabase.from('content').insert({
+    title: parsed.data.title,
+    body: parsed.data.body,
+    content_type: parsed.data.contentType,
+    submitted_source: submittedSource,
+    submitted_label: submittedLabel,
+    submitted_by: submittedBy,
+    // status defaults to 'pending'
+    // is_demo / expires_at intentionally left alone for now
+  })
+
+  if (error) {
+    console.error('Error submitting content:', error)
+
+    return {
+      success: false,
+      message: 'Something went wrong while submitting your content.',
+    }
+  }
+
+  revalidatePath('/dashboard/admin')
+  revalidatePath('/dashboard/admin/audit')
+  revalidatePath('/dashboard/moderator')
+  revalidatePath('/dashboard/viewer')
+
+  return {
+    success: true,
+    message: 'Content submitted successfully and is now pending review.',
+  }
+}
