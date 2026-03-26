@@ -40,25 +40,8 @@ export async function submitContent(
   }
 
   const supabase = await createServerSupabaseClient()
-
   const { data: { user } } = await supabase.auth.getUser()
-
-  let submittedBy: string | null = null
-  let submittedSource = 'public'
-  let submittedLabel = 'Public User'
-
-  if (user) {
-    submittedBy = user.id
-    submittedSource = 'authenticated'
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('username')
-      .eq('id', user.id)
-      .single()
-
-    submittedLabel = profile?.username ?? 'Authenticated User'
-  }
+  let submittedBy: string | null = user ? user.id : null
 
   const contentId = crypto.randomUUID()
 
@@ -68,10 +51,7 @@ export async function submitContent(
     body: parsed.data.body,
     content_type: parsed.data.contentType,
     status: 'pending',
-    submitted_source: submittedSource,
-    submitted_label: submittedLabel,
     submitted_by: submittedBy,
-    // status defaults to 'pending'
     // is_demo / expires_at intentionally left alone for now
   })
 

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
+import Link from 'next/link'
 
 export default function LoginPage() {
   const supabase = createSupabaseBrowserClient()
@@ -85,6 +86,9 @@ export default function LoginPage() {
       <button onClick={() => populateDemoCredentials('admin')}>Use Demo Admin</button>
       <button onClick={() => populateDemoCredentials('moderator')}>Use Demo Moderator</button>
       <button onClick={() => populateDemoCredentials('viewer')}>Use Demo Viewer</button>
+
+      <h2>Submit Content</h2>
+      <Link href={'/submit'}>Submit Content</Link>
     </div>
   )
 }
