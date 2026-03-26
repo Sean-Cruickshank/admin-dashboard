@@ -18,6 +18,7 @@ export default function Navbar({ profile } : NavbarProps) {
   
   return (
     <nav>
+      <Link href={'/submit'}>Submit Content</Link>
       <Link href={'/dashboard/viewer'}>My Content</Link>
       <Link href={'/dashboard'}>Dashboard</Link>
       {profile.role === 'admin' && <Link href={'/dashboard/admin/audit'}>Audits</Link>}

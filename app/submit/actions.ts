@@ -60,10 +60,14 @@ export async function submitContent(
     submittedLabel = profile?.username ?? 'Authenticated User'
   }
 
+  const contentId = crypto.randomUUID()
+
   const { error } = await supabase.from('content').insert({
+    id: contentId,
     title: parsed.data.title,
     body: parsed.data.body,
     content_type: parsed.data.contentType,
+    status: 'pending',
     submitted_source: submittedSource,
     submitted_label: submittedLabel,
     submitted_by: submittedBy,
@@ -78,6 +82,19 @@ export async function submitContent(
       success: false,
       message: 'Something went wrong while submitting your content.',
     }
+  }
+
+  const { error: auditError } = await supabase
+    .from('content_audit_logs')
+    .insert({
+      content_id: contentId,
+      action: 'submitted',
+      performed_by: submittedBy
+    })
+
+  if (auditError) {
+    console.error(auditError)
+    throw(auditError)
   }
 
   revalidatePath('/dashboard/admin')
