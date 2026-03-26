@@ -35,7 +35,12 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
       
       const { error: updateError } = await supabase
         .from('content')
-        .update({ status: action })
+        .update({
+          status: action,
+          reviewed_by: userId,
+          reviewed_at: new Date().toISOString(),
+          moderation_notes: notes?.trim() || null
+        })
         .eq('id', content.id)
 
       if (updateError) {

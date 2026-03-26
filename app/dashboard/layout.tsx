@@ -6,7 +6,7 @@ export default async function DashboardLayout({children}: {children: React.React
 
   return (
     <>
-      <Navbar profile={profile} />
+      <Navbar username={profile.username} role={profile.role} />
       <main>{children}</main>
     </>
   )
