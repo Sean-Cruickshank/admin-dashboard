@@ -3,7 +3,15 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 import { PAGE_SIZE } from "../constants/pagination";
 import { AuditSchema, Action, DateRange } from '@/app/types/Audit'
 
-type Audit = AuditSchema & { profiles: { username: string} | null, content: { title: string} | null}
+type Audit = AuditSchema & {
+  profiles: { username: string} | null,
+  content: { title: string} | null}
+
+type AuditUser = {
+  id: string
+  username: string
+  role: 'admin' | 'moderator'
+}
 
 function getDateCutoff(dateRange: DateRange): string | null {
   if (dateRange === 'all') return null
@@ -23,10 +31,12 @@ async function fetchAudits(
 
   const safeRequestedPage = Number.isInteger(page) && page > 0 ? page : 1
   const dateCutoff = getDateCutoff(dateRange)
+  const currentTime = new Date().toISOString()
 
   let countQuery = supabase
   .from('content_audit_logs')
-  .select('*', { count: 'exact', head: true})
+  .select('*, content!content_audit_logs_content_id_fkey!inner(id)', { count: 'exact', head: true})
+  .or(`expires_at.is.null,expires_at.gt.${currentTime}`, { foreignTable: 'content' })
 
   if (userId && userId !== 'all') countQuery = countQuery.eq('performed_by', userId)
 
@@ -49,14 +59,15 @@ async function fetchAudits(
     .from('content_audit_logs')
     .select(`
       *,
-      profiles!content_audit_logs_performed_by_fkey (username),
-      content!content_audit_logs_content_id_fkey (title)`)
+      profiles!content_audit_logs_performed_by_fkey(username),
+      content!content_audit_logs_content_id_fkey!inner(title)`)
+    .or(`expires_at.is.null,expires_at.gt.${currentTime}`, { foreignTable: 'content' })
     .order('performed_at', { ascending: false })
     .range(from, to)
 
-  if (userId !== 'all') auditQuery = auditQuery.eq('performed_by', userId)
+  if (userId && userId !== 'all') auditQuery = auditQuery.eq('performed_by', userId)
 
-  if (action !== 'all') auditQuery = auditQuery.eq('action', action)
+  if (action && action !== 'all') auditQuery = auditQuery.eq('action', action)
 
   if (dateCutoff) auditQuery = auditQuery.gte('performed_at', dateCutoff)
 
@@ -83,12 +94,6 @@ export function useAudit(
     queryFn: () => fetchAudits(userId, action, dateRange, page),
     placeholderData: (previousData) => previousData
   })
-}
-
-type AuditUser = {
-  id: string
-  username: string
-  role: 'admin' | 'moderator'
 }
 
 async function fetchAuditUsers() {

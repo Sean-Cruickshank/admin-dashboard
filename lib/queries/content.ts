@@ -14,6 +14,7 @@ export async function fetchContent(
   const supabase = createSupabaseBrowserClient()
 
   const safeRequestedPage = Number.isInteger(page) && page > 0 ? page : 1
+  const currentTime = new Date().toISOString()
 
   let countQuery = supabase
     .from('content')
@@ -28,6 +29,8 @@ export async function fetchContent(
   if (status && status !== 'all') {
     countQuery = countQuery.eq('status', status)
   }
+
+  countQuery = countQuery.or(`expires_at.is.null,expires_at.gt.${currentTime}`)
 
   const { count, error: countError } = await countQuery
 
@@ -55,6 +58,8 @@ export async function fetchContent(
   if (status && status !== 'all') {
     contentQuery = contentQuery.eq('status', status)
   }
+
+  contentQuery = contentQuery.or(`expires_at.is.null,expires_at.gt.${currentTime}`)
 
   const { data, error: contentError} = await contentQuery
 
