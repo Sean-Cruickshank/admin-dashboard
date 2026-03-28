@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { contentSubmissionSchema } from '@/lib/validation/contentSubmission'
+import { DEMO_ACCOUNTS, DEMO_EXPIRY_HOURS } from '@/lib/constants/demo'
 import { z } from 'zod'
 
 export type SubmissionState = {
@@ -41,9 +42,23 @@ export async function submitContent(
 
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
-  let submittedBy: string | null = user ? user.id : null
 
+  let submittedBy: string | null = user ? user.id : null
   const contentId = crypto.randomUUID()
+
+  function handleDemoDetails(): { is_demo: boolean; expires_at: string | null } {
+    const isDemo = user === null || DEMO_ACCOUNTS.includes(user.id)
+    const demoLifespan = DEMO_EXPIRY_HOURS * 60 * 60 * 1000
+
+    return {
+      is_demo: isDemo,
+      expires_at: isDemo
+        ? new Date(Date.now() + demoLifespan).toISOString()
+        : null
+    };
+  }
+
+  const demoDetails = handleDemoDetails()
 
   const { error } = await supabase.from('content').insert({
     id: contentId,
@@ -52,7 +67,8 @@ export async function submitContent(
     content_type: parsed.data.contentType,
     status: 'pending',
     submitted_by: submittedBy,
-    // is_demo / expires_at intentionally left alone for now
+    is_demo: demoDetails.is_demo,
+    expires_at: demoDetails.expires_at
   })
 
   if (error) {
