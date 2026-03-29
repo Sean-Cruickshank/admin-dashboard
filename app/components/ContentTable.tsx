@@ -86,7 +86,7 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
                     {item.title}
                   </Link>
                 </td>
-                {mode !== 'approved' && <td>{item.status}</td>}
+                {mode !== 'approved' && <td>{item.effective_status}</td>}
                 {mode !== 'user' && <td>{item.profiles?.username || 'Unknown'}</td>}
                 <td>{new Date(item.created_at).toLocaleString()}</td>
               </tr>

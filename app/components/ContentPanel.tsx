@@ -3,17 +3,13 @@
 import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
-import { Content as C } from '../types/Content'
+import { ContentWithProfile } from '../types/Content'
 import { useState } from 'react'
 import Link from 'next/link'
 import { DEMO_ACCOUNTS, DEMO_EXPIRY_HOURS } from '@/lib/constants/demo'
 
-type Content = C & {
-  profiles: { username: string } | null
-}
-
 type ContentPanelProps = {
-  content: Content,
+  content: ContentWithProfile,
   userId: string,
   role: string
 }
@@ -26,21 +22,10 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
   const [notes, setNotes] = useState('')
   const [notesError, setNotesError] = useState<string | null>(null)
 
-  function getEffectiveStatus(content: Content) {
-    const hasActiveDemoOverride =
-      content.demo_override_status !== null &&
-      content.demo_override_expires_at !== null &&
-      new Date(content.demo_override_expires_at).getTime() > Date.now()
-    return hasActiveDemoOverride ? content.demo_override_status : content.status
-  }
-
-  const effectiveStatus = getEffectiveStatus(content)
-
   const mutation = useMutation({
     mutationFn: async ({action, notes} : {action: "approved" | "rejected", notes: string}) => {
       const isDemo = DEMO_ACCOUNTS.includes(userId)
-      const currentEffectiveStatus = getEffectiveStatus(content)
-      const isOverride = currentEffectiveStatus !== 'pending' && currentEffectiveStatus !== action
+      const isOverride = content.effective_status !== 'pending' && content.effective_status !== action
 
       if (isOverride && !notes.trim()) {
         throw new Error('Notes are required when overriding a previous decision.')
@@ -101,7 +86,7 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
   })
 
   function handleStatus(action: 'approved' | 'rejected') {
-    const isOverride = effectiveStatus !== 'pending' && effectiveStatus !== action
+    const isOverride = content.effective_status !== 'pending' && content.effective_status !== action
 
     if (isOverride && !notes.trim()) {
       setNotesError('Notes are required when overriding a previous decision.')
@@ -117,7 +102,7 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
       <button onClick={() => router.back()}>Back</button>
       <h1>{content.title}</h1>
 
-      <p><strong>Status:</strong> {effectiveStatus}</p>
+      <p><strong>Status:</strong> {content.effective_status}</p>
       <p><strong>Submitted By:</strong> {content.profiles?.username}</p>
       <p><strong>Created:</strong> {new Date(content.created_at).toLocaleString()}</p>
 
@@ -125,7 +110,7 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
 
       <p>{content.body}</p>
 
-      {(effectiveStatus === 'pending' || role === 'admin') && (
+      {(content.effective_status === 'pending' || role === 'admin') && (
         <div>
           <label htmlFor='moderation-notes'>Notes:</label>
           <textarea
@@ -139,13 +124,13 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
 
           <button
             onClick={() => handleStatus('approved')}
-            disabled={mutation.isPending || effectiveStatus === 'approved'}>
+            disabled={mutation.isPending || content.effective_status === 'approved'}>
             Approve
           </button>
 
           <button
             onClick={() => handleStatus('rejected')}
-            disabled={mutation.isPending || effectiveStatus === 'rejected'}>
+            disabled={mutation.isPending || content.effective_status === 'rejected'}>
             Reject
           </button>
         </div>

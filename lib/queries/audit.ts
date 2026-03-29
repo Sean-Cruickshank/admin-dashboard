@@ -5,7 +5,7 @@ import { AuditSchema, Action, DateRange } from '@/app/types/Audit'
 
 type Audit = AuditSchema & {
   profiles: { username: string} | null,
-  content: { title: string} | null}
+  content: { title: string} | null }
 
 type AuditUser = {
   id: string

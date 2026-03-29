@@ -2,11 +2,9 @@
 
 import { useRouter } from "next/navigation"
 import { Content } from "../types/Content"
-import { Database } from '@/lib/database.types'
+import { AuditSchema } from "../types/Audit"
 
-type AuditLog = Database['public']['Tables']['content_audit_logs']['Row']
-
-type Logs = AuditLog & {
+type Logs = AuditSchema & {
   profiles: { username: string } | null
 }
 
