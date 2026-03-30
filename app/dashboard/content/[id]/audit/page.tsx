@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import AuditPanel from "@/app/components/AuditPanel";
 import { requireRole } from "@/lib/auth/requireRole";
+import { getDemoExpirationFilter } from '@/lib/helpers/getDemoExpirationFilter';
 
 export default async function ContentAuditPage(props: { params: Promise<{ id: string }> }) {
   
@@ -15,10 +16,13 @@ export default async function ContentAuditPage(props: { params: Promise<{ id: st
 
   if (!content) redirect('/dashboard')
 
+  const demoExpirationFilter = getDemoExpirationFilter()
+
   const { data: logs, error } = await supabase
     .from('content_audit_logs')
     .select(`*, profiles (username)`)
     .eq('content_id', id)
+    .or(demoExpirationFilter)
     .order('performed_at', { ascending: false })
 
   if (!logs || error) redirect('/dashboard')

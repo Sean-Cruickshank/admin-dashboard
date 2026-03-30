@@ -6,7 +6,7 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 import { ContentWithProfile } from '../types/Content'
 import { useState } from 'react'
 import Link from 'next/link'
-import { DEMO_ACCOUNTS, DEMO_EXPIRY_HOURS } from '@/lib/constants/demo'
+import { DEMO_ACCOUNTS, DEMO_LIFESPAN } from '@/lib/constants/demo'
 
 type ContentPanelProps = {
   content: ContentWithProfile,
@@ -31,13 +31,11 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
         throw new Error('Notes are required when overriding a previous decision.')
       }
       if (isDemo) {
-        const demoLifespan = DEMO_EXPIRY_HOURS * 60 * 60 * 1000
-        
         const { error: updateError } = await supabase
           .from('content')
           .update({
             demo_override_status: action,
-            demo_override_expires_at: new Date(Date.now() + demoLifespan).toISOString()
+            demo_override_expires_at: new Date(Date.now() + DEMO_LIFESPAN).toISOString()
           })
           .eq('id', content.id)
   
