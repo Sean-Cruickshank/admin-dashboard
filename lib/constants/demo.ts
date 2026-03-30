@@ -5,3 +5,5 @@ export const DEMO_ACCOUNTS = [
 ]
 
 export const DEMO_EXPIRY_HOURS = 0.02
+
+export const DEMO_LIFESPAN = DEMO_EXPIRY_HOURS * 60 * 60 * 1000

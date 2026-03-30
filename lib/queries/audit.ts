@@ -2,10 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 import { PAGE_SIZE } from "../constants/pagination";
 import { AuditSchema, Action, DateRange } from '@/app/types/Audit'
+import { getDemoExpirationFilter } from "../helpers/getDemoExpirationFilter";
 
 type Audit = AuditSchema & {
   profiles: { username: string} | null,
-  content: { title: string} | null}
+  content: { title: string} | null }
 
 type AuditUser = {
   id: string
@@ -31,12 +32,13 @@ async function fetchAudits(
 
   const safeRequestedPage = Number.isInteger(page) && page > 0 ? page : 1
   const dateCutoff = getDateCutoff(dateRange)
-  const currentTime = new Date().toISOString()
+
+  const demoExpirationFilter = getDemoExpirationFilter()
 
   let countQuery = supabase
-  .from('content_audit_logs')
-  .select('*, content!content_audit_logs_content_id_fkey!inner(id)', { count: 'exact', head: true})
-  .or(`expires_at.is.null,expires_at.gt.${currentTime}`, { foreignTable: 'content' })
+    .from('content_audit_logs')
+    .select('id', { count: 'exact', head: true})
+    .or(demoExpirationFilter)
 
   if (userId && userId !== 'all') countQuery = countQuery.eq('performed_by', userId)
 
@@ -60,8 +62,9 @@ async function fetchAudits(
     .select(`
       *,
       profiles!content_audit_logs_performed_by_fkey(username),
-      content!content_audit_logs_content_id_fkey!inner(title)`)
-    .or(`expires_at.is.null,expires_at.gt.${currentTime}`, { foreignTable: 'content' })
+      content!content_audit_logs_content_id_fkey(title)
+    `)
+    .or(demoExpirationFilter)
     .order('performed_at', { ascending: false })
     .range(from, to)
 

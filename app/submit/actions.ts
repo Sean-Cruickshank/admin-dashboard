@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { contentSubmissionSchema } from '@/lib/validation/contentSubmission'
-import { DEMO_ACCOUNTS, DEMO_EXPIRY_HOURS } from '@/lib/constants/demo'
+import { DEMO_ACCOUNTS, DEMO_LIFESPAN } from '@/lib/constants/demo'
 import { z } from 'zod'
 
 export type SubmissionState = {
@@ -48,12 +48,11 @@ export async function submitContent(
 
   function handleDemoDetails(): { is_demo: boolean; expires_at: string | null } {
     const isDemo = user === null || DEMO_ACCOUNTS.includes(user.id)
-    const demoLifespan = DEMO_EXPIRY_HOURS * 60 * 60 * 1000
 
     return {
       is_demo: isDemo,
       expires_at: isDemo
-        ? new Date(Date.now() + demoLifespan).toISOString()
+        ? new Date(Date.now() + DEMO_LIFESPAN).toISOString()
         : null
     };
   }

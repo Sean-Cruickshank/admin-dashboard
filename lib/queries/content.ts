@@ -1,9 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 import { PAGE_SIZE } from '@/lib/constants/pagination'
-import { Content as C, Status, Mode } from '@/app/types/Content'
-
-type Content = C & { profiles: { username: string } | null }
+import { ContentWithProfile, Status, Mode } from '@/app/types/Content'
 
 export async function fetchContent(
   status: Status,
@@ -17,17 +15,16 @@ export async function fetchContent(
   const currentTime = new Date().toISOString()
 
   let countQuery = supabase
-    .from('content')
+    .from('content_with_effective_status')
     .select('*', { count: 'exact', head: true})
 
   if (mode === 'user') {
     countQuery = countQuery.eq('submitted_by', userId)
   }
   if (mode === 'approved') {
-    countQuery = countQuery.eq('status', 'approved')
-  }
-  if (status && status !== 'all') {
-    countQuery = countQuery.eq('status', status)
+    countQuery = countQuery.eq('effective_status', 'approved')
+  } else if (status && status !== 'all') {
+    countQuery = countQuery.eq('effective_status', status)
   }
 
   countQuery = countQuery.or(`expires_at.is.null,expires_at.gt.${currentTime}`)
@@ -44,7 +41,7 @@ export async function fetchContent(
   const to = from + PAGE_SIZE - 1
 
   let contentQuery = supabase
-    .from('content')
+    .from('content_with_effective_status')
     .select('*, profiles!content_submitted_by_fkey (username)')
     .order('created_at', { ascending: false })
     .range(from, to)
@@ -53,10 +50,9 @@ export async function fetchContent(
     contentQuery = contentQuery.eq('submitted_by', userId)
   }
   if (mode === 'approved') {
-    contentQuery = contentQuery.eq('status', 'approved')
-  }
-  if (status && status !== 'all') {
-    contentQuery = contentQuery.eq('status', status)
+    contentQuery = contentQuery.eq('effective_status', 'approved')
+  } else if (status && status !== 'all') {
+    contentQuery = contentQuery.eq('effective_status', status)
   }
 
   contentQuery = contentQuery.or(`expires_at.is.null,expires_at.gt.${currentTime}`)
@@ -66,7 +62,7 @@ export async function fetchContent(
   if (contentError) throw new Error(contentError.message)
 
   return {
-    data: data as Content[],
+    data: data as ContentWithProfile[],
     count: totalCount,
     currentPage,
     totalPages
