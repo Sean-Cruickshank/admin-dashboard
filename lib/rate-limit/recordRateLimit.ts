@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 
 type RecordRateLimitParams = {
   subjectType: 'user' | 'ip'
@@ -9,7 +9,7 @@ type RecordRateLimitParams = {
 export async function recordRateLimit({
   subjectType, subjectKey, action
 }: RecordRateLimitParams): Promise<void> {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createSupabaseAdminClient()
 
   const { error } = await supabase.from('rate_limits').insert({
     subject_type: subjectType,

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { contentSubmissionSchema } from '@/lib/validation/contentSubmission'
 import { getSubmissionSubject } from '@/lib/rate-limit/getSubmissionSubject'
 import { checkRateLimit } from '@/lib/rate-limit/checkRateLimit'
@@ -44,7 +44,7 @@ export async function submitContent(
     }
   }
 
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   const submittedBy: string | null = user ? user.id : null

@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { DEMO_ACCOUNTS, DEMO_LIFESPAN } from '@/lib/constants/demo'
 import { checkRateLimit } from '@/lib/rate-limit/checkRateLimit'
 import { recordRateLimit } from '@/lib/rate-limit/recordRateLimit'
@@ -36,12 +36,9 @@ export async function moderateContent(
   const moderationAction: ModerationAction = action
   const trimmedNotes = notes.trim()
 
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createSupabaseServerClient()
 
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser()
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
 
   if (userError || !user) {
     return {

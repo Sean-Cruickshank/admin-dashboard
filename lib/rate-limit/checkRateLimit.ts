@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 
 type RateLimitParams = {
   subjectType: 'user' | 'ip'
@@ -10,7 +10,7 @@ type RateLimitParams = {
 export async function checkRateLimit({
   subjectType, subjectKey, action, windowSeconds
 }: RateLimitParams): Promise<boolean> {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createSupabaseAdminClient()
 
   const cutoff = new Date(Date.now() - windowSeconds * 1000).toISOString()
 
