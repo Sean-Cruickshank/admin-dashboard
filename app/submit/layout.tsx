@@ -1,8 +1,8 @@
 import Navbar from '@/app/components/Navbar';
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createSupabaseServerClient } from '@/lib/supabase/server'
 
 export default async function SubmitLayout({children}: {children: React.ReactNode}) {
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createSupabaseServerClient()
   
   const { data: { user }, error: userError } = await supabase.auth.getUser()
   if (userError) console.error(userError)

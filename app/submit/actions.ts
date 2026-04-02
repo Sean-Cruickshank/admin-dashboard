@@ -1,10 +1,14 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { contentSubmissionSchema } from '@/lib/validation/contentSubmission'
-import { DEMO_ACCOUNTS, DEMO_LIFESPAN } from '@/lib/constants/demo'
 import { z } from 'zod'
+import { createSupabaseServerClient } from '@/lib/supabase/server'
+import { contentSubmissionSchema } from '@/lib/validation/contentSubmission'
+import { getSubmissionSubject } from '@/lib/rate-limit/getSubmissionSubject'
+import { checkRateLimit } from '@/lib/rate-limit/checkRateLimit'
+import { recordRateLimit } from '@/lib/rate-limit/recordRateLimit'
+import { DEMO_ACCOUNTS, DEMO_LIFESPAN } from '@/lib/constants/demo'
+import { RATE_LIMIT_ACTIONS, RATE_LIMIT_WINDOWS } from '@/lib/constants/rateLimit'
 
 export type SubmissionState = {
   success: boolean
@@ -40,11 +44,26 @@ export async function submitContent(
     }
   }
 
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  let submittedBy: string | null = user ? user.id : null
+  const submittedBy: string | null = user ? user.id : null
   const contentId = crypto.randomUUID()
+  const submissionSubject = await getSubmissionSubject(submittedBy)
+
+  const isRateLimited = await checkRateLimit({
+    subjectType: submissionSubject.subjectType,
+    subjectKey: submissionSubject.subjectKey,
+    action: RATE_LIMIT_ACTIONS.CREATE_SUBMISSION,
+    windowSeconds: RATE_LIMIT_WINDOWS.CREATE_SUBMISSION_SECONDS,
+  })
+
+  if (isRateLimited) {
+    return {
+      success: false,
+      message: 'Please wait 30 seconds before submitting again.',
+    }
+  }
 
   function handleDemoDetails(): { is_demo: boolean; expires_at: string | null } {
     const isDemo = user === null || DEMO_ACCOUNTS.includes(user.id)
@@ -66,6 +85,8 @@ export async function submitContent(
     content_type: parsed.data.contentType,
     status: 'pending',
     submitted_by: submittedBy,
+    submitter_subject_type: submissionSubject.subjectType,
+    submitter_subject_key: submissionSubject.subjectKey,
     is_demo: demoDetails.is_demo,
     expires_at: demoDetails.expires_at
   })
@@ -91,6 +112,12 @@ export async function submitContent(
     console.error(auditError)
     throw(auditError)
   }
+
+  await recordRateLimit({
+    subjectType: submissionSubject.subjectType,
+    subjectKey: submissionSubject.subjectKey,
+    action: RATE_LIMIT_ACTIONS.CREATE_SUBMISSION,
+  })
 
   revalidatePath('/dashboard/admin')
   revalidatePath('/dashboard/admin/audit')

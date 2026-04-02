@@ -1,103 +1,57 @@
 'use client'
 
+import { useActionState, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createSupabaseBrowserClient } from '@/lib/supabase/client'
-import { ContentWithProfile } from '../types/Content'
-import { useState } from 'react'
 import Link from 'next/link'
-import { DEMO_ACCOUNTS, DEMO_LIFESPAN } from '@/lib/constants/demo'
+import { ContentWithProfile } from '../types/Content'
+import { moderateContent, type ModerateContentState } from '@/app/dashboard/content/[id]/action'
 
 type ContentPanelProps = {
-  content: ContentWithProfile,
-  userId: string,
+  content: ContentWithProfile
   role: string
 }
 
-export default function ContentPanel({ content, userId, role } : ContentPanelProps) {
-  const supabase = createSupabaseBrowserClient()
+const initialState: ModerateContentState = {
+  success: false,
+  message: '',
+}
+
+export default function ContentPanel({ content, role }: ContentPanelProps) {
   const router = useRouter()
-  const queryClient = useQueryClient()
+  const [state, formAction, pending] = useActionState(moderateContent, initialState)
 
   const [notes, setNotes] = useState('')
   const [notesError, setNotesError] = useState<string | null>(null)
+  const [selectedAction, setSelectedAction] = useState<'approved' | 'rejected' | null>(null)
 
-  const mutation = useMutation({
-    mutationFn: async ({action, notes} : {action: "approved" | "rejected", notes: string}) => {
-      const isDemo = DEMO_ACCOUNTS.includes(userId)
-      const isOverride = content.effective_status !== 'pending' && content.effective_status !== action
-
-      if (isOverride && !notes.trim()) {
-        throw new Error('Notes are required when overriding a previous decision.')
-      }
-      if (isDemo) {
-        const { error: updateError } = await supabase
-          .from('content')
-          .update({
-            demo_override_status: action,
-            demo_override_expires_at: new Date(Date.now() + DEMO_LIFESPAN).toISOString()
-          })
-          .eq('id', content.id)
-  
-        if (updateError) {
-          console.error(updateError)
-          throw updateError
-        }
-      } else {
-        const { error: updateError } = await supabase
-          .from('content')
-          .update({
-            status: action,
-            reviewed_by: userId,
-            reviewed_at: new Date().toISOString(),
-            moderation_notes: notes?.trim() || null,
-            demo_override_status: null,
-            demo_override_expires_at: null
-          })
-          .eq('id', content.id)
-  
-        if (updateError) {
-          console.error(updateError)
-          throw updateError
-        }
-      }
-
-      const { error: auditError } = await supabase
-        .from('content_audit_logs')
-        .insert({
-          content_id: content.id,
-          action,
-          performed_by: userId,
-          notes: notes.trim() || null
-        })
-
-      if (auditError) {
-        console.error(auditError)
-        throw(auditError)
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['content'] })
+  useEffect(() => {
+    if (state.success) {
       router.push('/dashboard')
       router.refresh()
-    },
-  })
+    }
+  }, [state.success, router])
 
   function handleStatus(action: 'approved' | 'rejected') {
-    const isOverride = content.effective_status !== 'pending' && content.effective_status !== action
+    const isOverride =
+      content.effective_status !== 'pending' &&
+      content.effective_status !== action
 
     if (isOverride && !notes.trim()) {
       setNotesError('Notes are required when overriding a previous decision.')
-      return
+      return false
     }
 
     setNotesError(null)
-    mutation.mutate({ action, notes: notes.trim() })
+    setSelectedAction(action)
+    return true
   }
 
   return (
     <div>
-      <button onClick={() => router.back()}>Back</button>
+      <button onClick={() => router.back()} disabled={pending}>
+        Back
+      </button>
+
       <h1>{content.title}</h1>
 
       <p><strong>Status:</strong> {content.effective_status}</p>
@@ -109,36 +63,51 @@ export default function ContentPanel({ content, userId, role } : ContentPanelPro
       <p>{content.body}</p>
 
       {(content.effective_status === 'pending' || role === 'admin') && (
-        <div>
-          <label htmlFor='moderation-notes'>Notes:</label>
-          <textarea
-            id='moderation-notes'
-            value={notes}
-            onChange={e => setNotes(e.target.value)}
-            disabled={mutation.isPending}
-            rows={4}
-          />
-          {notesError && <p>{notesError}</p>}
+        <form action={formAction}>
+          <input type="hidden" name="contentId" value={content.id} />
+          <input type="hidden" name="notes" value={notes} />
+
+          <div>
+            <label htmlFor="moderation-notes">Notes:</label>
+            <textarea
+              id="moderation-notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              disabled={pending}
+              rows={4}
+            />
+            {notesError && <p>{notesError}</p>}
+          </div>
+
+          {state.message && <div>{state.message}</div>}
 
           <button
-            onClick={() => handleStatus('approved')}
-            disabled={mutation.isPending || content.effective_status === 'approved'}>
-            Approve
+            type="submit"
+            name="action"
+            value="approved"
+            onClick={(e) => { if (!handleStatus('approved')) e.preventDefault()} } 
+            disabled={pending || content.effective_status === 'approved'}
+          >
+            {pending && selectedAction === 'approved' ? 'Approving...' : 'Approve'}
           </button>
 
           <button
-            onClick={() => handleStatus('rejected')}
-            disabled={mutation.isPending || content.effective_status === 'rejected'}>
-            Reject
+            type="submit"
+            name="action"
+            value="rejected"
+            onClick={(e) => { if (!handleStatus('rejected')) e.preventDefault()} } 
+            disabled={pending || content.effective_status === 'rejected'}
+          >
+            {pending && selectedAction === 'rejected' ? 'Rejecting...' : 'Reject'}
           </button>
-        </div>
+        </form>
       )}
 
-      {role === 'admin' &&
+      {role === 'admin' && (
         <Link href={`/dashboard/content/${content.id}/audit`}>
           View Audit Logs
         </Link>
-      }
+      )}
     </div>
   )
 }
