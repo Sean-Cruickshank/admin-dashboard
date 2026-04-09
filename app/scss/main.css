@@ -2,6 +2,78 @@ html {
   background-color: lightgray;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.table__filters {
+  width: 15%;
+}
+.table__filters div {
+  display: flex;
+  flex-direction: column;
+}
+.table__filters a {
+  background-color: green;
+  width: 60%;
+  text-align: center;
+  text-decoration: none;
+  margin: 4px;
+  padding: 4px 8px;
+}
+.table__filters .active {
+  color: red;
+}
+.table__dashboard {
+  width: 85%;
+}
+.table__dashboard table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  margin-inline: auto;
+}
+.table__dashboard td {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 4px;
+}
+.table__row {
+  cursor: pointer;
+}
+.table__row:hover {
+  background-color: blue;
+}
+.table__row:focus {
+  outline: 2px solid black;
+  outline-offset: -2px;
+}
+.table__pagination {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.table__pagination .page-count {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+button {
+  padding: 12px 16px;
+  margin: 8px;
+  border: none;
+  border-radius: 5px;
+}
+
 nav {
   background-color: #EEE;
   display: flex;
@@ -12,4 +84,79 @@ nav {
 nav p {
   padding: 0;
   margin: 0;
+}
+
+.content-table {
+  display: flex;
+  gap: 10px;
+}
+
+.status, .status__rejected, .status__approved, .status__pending {
+  background-color: grey;
+  width: -moz-min-content;
+  width: min-content;
+  padding: 4px 8px;
+  border-radius: 10px;
+  min-width: 50%;
+  text-align: center;
+}
+.status__pending {
+  background-color: rgb(255, 255, 164);
+}
+.status__approved {
+  background-color: rgb(218, 254, 163);
+}
+.status__rejected {
+  background-color: rgb(255, 215, 141);
+}
+
+.audit-table {
+  display: flex;
+  gap: 10px;
+}
+
+.login {
+  display: flex;
+  height: 100vh;
+}
+.login__banner {
+  width: 70%;
+  background-image: url("@/public/mountains.jpg");
+}
+.login__form {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.login__form form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+.login__form form button {
+  margin-top: 32px;
+}
+.login__form input {
+  width: 70%;
+  padding: 12px 16px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 5px;
+}
+.login__form button {
+  width: 50%;
+}
+.login__demo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 64px;
+}
+.login__submit {
+  width: 100%;
+  text-align: center;
+  margin-top: 64px;
 }/*# sourceMappingURL=main.css.map */

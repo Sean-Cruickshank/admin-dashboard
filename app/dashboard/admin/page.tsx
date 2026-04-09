@@ -8,7 +8,7 @@ export default async function AdminDashboard() {
   return (
     <div>
       <h1>Admin Dashboard</h1>
-      <Link href={'/dashboard/admin/audit'}>View Audit History</Link>
+      {/* <Link href={'/dashboard/admin/audit'}>View Audit History</Link> */}
       <ContentTable userId={user.id} mode={'all'} />
     </div>
   )
