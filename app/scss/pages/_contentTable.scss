@@ -1,28 +1,15 @@
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  & h1 {
+    width: max-content;
+  }
+}
+
 .content-table {
   display: flex;
   gap: 10px;
-}
-
-.status {
-  background-color: grey;
-  width: min-content;
-  padding: 4px 8px;
-  border-radius: 10px;
-  min-width: 50%;
-  text-align: center;
-
-  &__pending {
-    @extend .status;
-    background-color: rgb(255, 255, 164);
-  }
-
-  &__approved {
-    @extend .status;
-    background-color: rgb(218, 254, 163);
-  }
-
-  &__rejected {
-    @extend .status;
-    background-color: rgb(255, 215, 141);
-  }
+  width: 100%;
 }

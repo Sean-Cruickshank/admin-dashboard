@@ -74,9 +74,8 @@ export default function AuditTable() {
       {/* <button onClick={() => router.back()}>Back</button> */}
 
       <div className="table__filters">
-        <h2>Filters:</h2>
         <div>
-          Filter by User:
+          <h3>Filter by User:</h3>
           <Link
             className={userId === 'all' ? 'active' : ''}
             href={buildFilterHref('all', 'userId')}
@@ -99,7 +98,7 @@ export default function AuditTable() {
         </div>
 
         <div>
-          Filter by Action:
+          <h3>Filter by Action:</h3>
           <Link
             className={action === 'all' ? 'active' : ''}
             href={buildFilterHref('all', 'action')}
@@ -119,7 +118,7 @@ export default function AuditTable() {
         </div>
 
         <div>
-          Filter by Date:
+          <h3>Filter by Date:</h3>
           <Link
             className={dateRange === 'all' ? 'active' : ''}
             href={buildFilterHref('all', 'dateRange')}
@@ -136,7 +135,14 @@ export default function AuditTable() {
       </div>
 
       <div className="table__dashboard">
-        <table>
+        <table className="table--audit">
+          <colgroup>
+            <col style={{width: '25%'}}></col>
+            <col style={{width: '10%'}}></col>
+            <col style={{width: '20%'}}></col>
+            <col style={{width: '15%'}}></col>
+            <col style={{width: '30%'}}></col>
+          </colgroup>
           <thead>
             <tr>
               <th>Title</th>
@@ -159,10 +165,10 @@ export default function AuditTable() {
                   aria-label={`View content: ${item.content?.title}`}
                 >
                   <td>{item.content?.title}</td>
-                  <td>{item.action}</td>
+                  <td><div className={`status__${item.action}`}>{item.action}</div></td>
                   <td>{item.profiles?.username || 'Unknown'}</td>
                   <td>{new Date(item.performed_at).toLocaleString()}</td>
-                  <td>{item.notes || '-'}</td>
+                  <td><div className="table__notes">{item.notes || '-'}</div></td>
                 </tr>
               ))
             ) : (
@@ -173,7 +179,7 @@ export default function AuditTable() {
           </tbody>
         </table>
 
-        <div className="table__pagination">
+        <div className="table__pagination pagination--audit">
           {hasPreviousPage
             ? <Link href={buildPageHref(currentPage - 1)}>Previous</Link>
             : <span>Previous</span>

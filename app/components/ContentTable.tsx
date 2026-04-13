@@ -68,8 +68,8 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
         <div className='table__filters'>
           {(mode === 'all' || mode === 'user') &&
             <>
-              <h2>Filters:</h2>
               <div>
+                <h3>Filter by Status:</h3>
                 <Link
                   className={status === 'all' ? 'active' : ''}
                   href={buildStatusHref('all')}>
@@ -102,7 +102,13 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
         {mode === 'all' && <h2>Recent Submissions</h2>}
         {mode === 'user' && <h2>My Submissions</h2>}
         {mode === 'approved' && <h2>Latest Posts</h2>}
-        <table>
+        <table className={`table--${mode}`}>
+          <colgroup>
+            <col style={{width: mode === 'all' ? '25%' : '33%'}}></col>
+            <col style={{width: mode === 'all' ? '25%' : '33%'}}></col>
+            <col style={{width: mode === 'all' ? '25%' : '33%'}}></col>
+            {mode === 'all' && <col style={{width: mode === 'all' ? '25%' : '33%'}}></col>}
+          </colgroup>
           <thead>
             <tr>
               <th>Title</th>
@@ -141,7 +147,7 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
           </tbody>
         </table>
 
-        <div className='table__pagination'>
+        <div className={`table__pagination pagination--${mode}`}>
           {hasPreviousPage
             ? <Link href={buildPageHref(currentPage - 1)}>Previous</Link>
             : <span>Previous</span>
