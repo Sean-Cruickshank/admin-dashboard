@@ -71,8 +71,6 @@ export default function AuditTable() {
 
   return (
     <div className="audit-table">
-      {/* <button onClick={() => router.back()}>Back</button> */}
-
       <div className="table__filters">
         <div>
           <h3>Filter by User:</h3>
@@ -135,7 +133,7 @@ export default function AuditTable() {
       </div>
 
       <div className="table__dashboard">
-        <table className="table--audit">
+        <table>
           <colgroup>
             <col style={{width: '25%'}}></col>
             <col style={{width: '10%'}}></col>
@@ -179,7 +177,7 @@ export default function AuditTable() {
           </tbody>
         </table>
 
-        <div className="table__pagination pagination--audit">
+        <div className="table__pagination">
           {hasPreviousPage
             ? <Link href={buildPageHref(currentPage - 1)}>Previous</Link>
             : <span>Previous</span>

@@ -1,5 +1,10 @@
 html {
+  box-sizing: border-box;
   background-color: lightgray;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
 }
 
 body {
@@ -46,15 +51,10 @@ a:hover {
   width: 85%;
 }
 .table__dashboard table {
+  width: 100%;
   text-align: left;
   border-collapse: collapse;
   table-layout: fixed;
-}
-.table__dashboard table.table--all, .table__dashboard table.table--audit {
-  width: 100%;
-}
-.table__dashboard table.table--user, .table__dashboard table.table--approved {
-  width: 75%;
 }
 .table__dashboard th {
   padding: 4px;
@@ -81,15 +81,11 @@ a:hover {
   overflow: hidden;
 }
 .table__pagination {
+  width: 100%;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-}
-.table__pagination.pagination--all, .table__pagination.pagination--audit {
-  width: 100%;
-}
-.table__pagination.pagination--user, .table__pagination.pagination--approved {
-  width: 75%;
+  margin-top: 32px;
 }
 .table__pagination .page-count {
   display: flex;

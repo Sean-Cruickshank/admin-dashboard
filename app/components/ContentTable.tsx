@@ -6,6 +6,8 @@ import { useContent } from '@/lib/queries/content'
 import { Status, Mode } from '@/app/types/Content'
 import { handleRowClick, handleRowKeyDown } from '@/lib/helpers/handleRowClick'
 import { useRouter } from 'next/navigation'
+import { IoChevronBack, IoChevronForward } from "react-icons/io5";
+import Pagination from './Pagination'
 
 type ContentTableProps = { userId: string, mode: Mode }
 
@@ -102,7 +104,7 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
         {mode === 'all' && <h2>Recent Submissions</h2>}
         {mode === 'user' && <h2>My Submissions</h2>}
         {mode === 'approved' && <h2>Latest Posts</h2>}
-        <table className={`table--${mode}`}>
+        <table>
           <colgroup>
             <col style={{width: mode === 'all' ? '25%' : '33%'}}></col>
             <col style={{width: mode === 'all' ? '25%' : '33%'}}></col>
@@ -147,10 +149,18 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
           </tbody>
         </table>
 
-        <div className={`table__pagination pagination--${mode}`}>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          searchParams={searchParams}
+          pathname={pathname}
+          pageParamKey={pageParamKey}
+        />
+
+        {/* <div className="table__pagination">
           {hasPreviousPage
-            ? <Link href={buildPageHref(currentPage - 1)}>Previous</Link>
-            : <span>Previous</span>
+            ? <Link href={buildPageHref(currentPage - 1)}><IoChevronBack /></Link>
+            : <IoChevronBack />
           }
 
           <div className='page-count'>
@@ -159,10 +169,10 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
           </div>
 
           {hasNextPage
-            ? <Link href={buildPageHref(currentPage + 1)}>Next</Link>
-            : <span>Next</span>
+            ? <Link href={buildPageHref(currentPage + 1)}><IoChevronForward /></Link>
+            : <IoChevronForward />
           }
-        </div>
+        </div> */}
       </div>
     </div>
   )

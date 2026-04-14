@@ -34,18 +34,10 @@
     width: 85%;
     
     & table {
-      // width: 100%;
+      width: 100%;
       text-align: left;
       border-collapse: collapse;
       table-layout: fixed;
-
-      &.table--all, &.table--audit {
-        width: 100%;
-      }
-
-      &.table--user, &.table--approved {
-        width: 75%;
-      }
     }
 
     & th {
@@ -80,17 +72,11 @@
   }
 
   &__pagination {
+    width: 100%;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-
-    &.pagination--all, &.pagination--audit {
-      width: 100%;
-    }
-
-    &.pagination--user, &.pagination--approved {
-      width: 75%;
-    }
+    margin-top: 32px;
 
     & .page-count {
       display: flex;
