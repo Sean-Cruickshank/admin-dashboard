@@ -78,6 +78,25 @@
     align-items: center;
     margin-top: 32px;
 
+    & a, div {
+      background-color: black;
+      color: white;
+      width: 32px;
+      aspect-ratio: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    & .active {
+      background-color: green;
+    }
+
+    & .disabled {
+      background-color: grey;
+      cursor: default;
+    }
+
     & .page-count {
       display: flex;
       flex-direction: column;

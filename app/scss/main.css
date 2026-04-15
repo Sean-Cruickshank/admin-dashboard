@@ -87,6 +87,22 @@ a:hover {
   align-items: center;
   margin-top: 32px;
 }
+.table__pagination a, .table__pagination div {
+  background-color: black;
+  color: white;
+  width: 32px;
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.table__pagination .active {
+  background-color: green;
+}
+.table__pagination .disabled {
+  background-color: grey;
+  cursor: default;
+}
 .table__pagination .page-count {
   display: flex;
   flex-direction: column;
