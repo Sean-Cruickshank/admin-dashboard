@@ -6,9 +6,8 @@ export default async function AdminDashboard() {
   const { user } = await requireRole(['admin'])
 
   return (
-    <div>
+    <div className='dashboard-page'>
       <h1>Admin Dashboard</h1>
-      <Link href={'/dashboard/admin/audit'}>View Audit History</Link>
       <ContentTable userId={user.id} mode={'all'} />
     </div>
   )

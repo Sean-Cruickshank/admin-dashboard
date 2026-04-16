@@ -1,0 +1,15 @@
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  & h1 {
+    width: max-content;
+  }
+}
+
+.content-table {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}

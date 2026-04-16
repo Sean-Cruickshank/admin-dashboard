@@ -1,0 +1,15 @@
+.global-audit-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  & h1 {
+    width: max-content;
+  }
+}
+
+.audit-table {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}

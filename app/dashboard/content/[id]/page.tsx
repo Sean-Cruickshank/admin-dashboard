@@ -15,6 +15,8 @@ export default async function ReviewPage(props: { params: Promise<{ id: string }
 
   if (error || !content) redirect('/dashboard')
 
+  if (content.expires_at && new Date(content.expires_at) <= new Date()) redirect('/dashboard')
+
   const typedContent: ContentWithProfile = {
     id: content.id!,
     title: content.title!,
@@ -28,5 +30,5 @@ export default async function ReviewPage(props: { params: Promise<{ id: string }
     profiles: content.profiles,
   }
 
-  return <ContentPanel content={typedContent} userId={user.id} role={profile?.role} />
+  return <ContentPanel content={typedContent} role={profile?.role} />
 }

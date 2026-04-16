@@ -1,6 +1,6 @@
 'use client'
 
-import LogoutButton from '@/app/components/logoutButton'
+import LogoutButton from '@/app/components/LogoutButton'
 import Link from 'next/link'
 
 type NavbarProps = {
