@@ -80,14 +80,15 @@ a:hover {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.table__pagination {
+.table__pagination__buttons {
   width: 100%;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   margin-top: 32px;
+  margin-bottom: 16px;
 }
-.table__pagination a, .table__pagination div {
+.table__pagination__buttons a, .table__pagination__buttons div {
   background-color: black;
   color: white;
   width: 32px;
@@ -95,15 +96,16 @@ a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 0 8px;
 }
-.table__pagination .active {
+.table__pagination__buttons .active {
   background-color: green;
 }
-.table__pagination .disabled {
+.table__pagination__buttons .disabled {
   background-color: grey;
   cursor: default;
 }
-.table__pagination .page-count {
+.table__pagination__count {
   display: flex;
   flex-direction: column;
   text-align: center;

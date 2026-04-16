@@ -6,6 +6,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Action, DateRange } from '@/app/types/Audit'
 import { handleRowClick, handleRowKeyDown } from "@/lib/helpers/handleRowClick";
 import { useRouter } from 'next/navigation'
+import Pagination from "./Pagination";
 
 type Filter = 'userId' | 'action' | 'dateRange'
 
@@ -177,22 +178,13 @@ export default function AuditTable() {
           </tbody>
         </table>
 
-        <div className="table__pagination">
-          {hasPreviousPage
-            ? <Link href={buildPageHref(currentPage - 1)}>Previous</Link>
-            : <span>Previous</span>
-          }
-
-          <div className='page-count'>
-            <span>Page {currentPage} of {totalPages}</span>
-            <span>({count ?? 0} total items)</span>
-          </div>
-
-          {hasNextPage
-            ? <Link href={buildPageHref(currentPage + 1)}>Next</Link>
-            : <span>Next</span>
-          }
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          count={count}
+          searchParams={searchParams}
+          pathname={pathname}
+        />
 
       </div>
     </div>

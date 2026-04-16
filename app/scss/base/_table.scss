@@ -72,32 +72,38 @@
   }
 
   &__pagination {
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 32px;
+    
 
-    & a, div {
-      background-color: black;
-      color: white;
-      width: 32px;
-      aspect-ratio: 1;
+    &__buttons {
+      width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
+      margin-top: 32px;
+      margin-bottom: 16px;
+
+      & a, div {
+        background-color: black;
+        color: white;
+        width: 32px;
+        aspect-ratio: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 8px;
+      }
+  
+      & .active {
+        background-color: green;
+      }
+  
+      & .disabled {
+        background-color: grey;
+        cursor: default;
+      }
     }
 
-    & .active {
-      background-color: green;
-    }
-
-    & .disabled {
-      background-color: grey;
-      cursor: default;
-    }
-
-    & .page-count {
+    &__count {
       display: flex;
       flex-direction: column;
       text-align: center;

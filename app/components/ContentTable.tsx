@@ -6,7 +6,6 @@ import { useContent } from '@/lib/queries/content'
 import { Status, Mode } from '@/app/types/Content'
 import { handleRowClick, handleRowKeyDown } from '@/lib/helpers/handleRowClick'
 import { useRouter } from 'next/navigation'
-import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import Pagination from './Pagination'
 
 type ContentTableProps = { userId: string, mode: Mode }
@@ -33,20 +32,6 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
   const count = data?.count ?? 0
   const currentPage = data?.currentPage ?? page
   const totalPages = data?.totalPages ?? 1
-  
-  const hasPreviousPage = currentPage > 1
-  const hasNextPage = currentPage < totalPages
-  
-  function buildPageHref( newPage: number ) {
-    const params = new URLSearchParams(searchParams.toString())
-    if (newPage <= 1) {
-      params.delete(pageParamKey)
-    } else {
-      params.set(pageParamKey, String(newPage))
-    }
-    const query = params.toString()
-    return query ? `${pathname}?${query}` : pathname
-  }
 
   function buildStatusHref( newStatus: Status) {
     const params = new URLSearchParams(searchParams.toString())
@@ -152,27 +137,11 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
+          count={count}
           searchParams={searchParams}
           pathname={pathname}
           pageParamKey={pageParamKey}
         />
-
-        {/* <div className="table__pagination">
-          {hasPreviousPage
-            ? <Link href={buildPageHref(currentPage - 1)}><IoChevronBack /></Link>
-            : <IoChevronBack />
-          }
-
-          <div className='page-count'>
-            <span>Page {currentPage} of {totalPages}</span>
-            <span>({count ?? 0} total items)</span>
-          </div>
-
-          {hasNextPage
-            ? <Link href={buildPageHref(currentPage + 1)}><IoChevronForward /></Link>
-            : <IoChevronForward />
-          }
-        </div> */}
       </div>
     </div>
   )

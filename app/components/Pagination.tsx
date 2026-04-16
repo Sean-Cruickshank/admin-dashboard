@@ -6,13 +6,14 @@ import Link from 'next/link'
 type PaginationProps = {
   currentPage: number
   totalPages: number
+  count: number
   searchParams: ReadonlyURLSearchParams
   pathname: string
   pageParamKey?: string
 }
 
 export default function Pagination(
-  {currentPage, totalPages, searchParams, pathname, pageParamKey = 'page'} : PaginationProps
+  {currentPage, totalPages, count, searchParams, pathname, pageParamKey = 'page'} : PaginationProps
 ) {
   function buildPageHref( newPage: number ) {
     const params = new URLSearchParams(searchParams.toString())
@@ -32,39 +33,48 @@ export default function Pagination(
     for (let i = 1; i <= buttonCount; i++) {
       paginationButtons.push(i)
     }
-  } else if (currentPage > totalPages - 2) {
+  } else if (totalPages >= 3 && currentPage > totalPages - 2) {
     for (let j = 1; j <= buttonCount; j++) {
-      paginationButtons.push(totalPages + (j - 5))
+      paginationButtons.push(totalPages + (j - buttonCount))
     }
   } else {
     for (let k = 1; k <= buttonCount; k++) {
       paginationButtons.push(currentPage + (k - 3))
+      console.log('test')
     }
   }
 
   return (
     <div className="table__pagination">
-      <Link href={buildPageHref(1)}><FiChevronsLeft /></Link>
-      
-      {currentPage > 1
-        ? <Link href={buildPageHref(currentPage - 1)}><FiChevronLeft /></Link>
-        : <div className="disabled"><FiChevronLeft /></div>
-      }
+      <div className="table__pagination__buttons">
+        <Link title="First Page" href={buildPageHref(1)}><FiChevronsLeft /></Link>
+        
+        {currentPage > 1
+          ? <Link title="Previous Page" href={buildPageHref(currentPage - 1)}><FiChevronLeft /></Link>
+          : <div title="Previous Page" className="disabled"><FiChevronLeft /></div>
+        }
 
-      {paginationButtons.map(page => 
-        <Link
-          key={page}
-          className={currentPage === page ? 'active' : ''}
-          href={buildPageHref(page)}>{page}
-        </Link>
-      )}
+        {paginationButtons.map(page => 
+          <Link
+            key={page}
+            title={`Page ${page}`}
+            className={currentPage === page ? 'active' : ''}
+            href={buildPageHref(page)}>{page}
+          </Link>
+        )}
 
-      {currentPage < totalPages
-        ? <Link href={buildPageHref(currentPage + 1)}><FiChevronRight /></Link>
-        : <div className="disabled"><FiChevronRight /></div>
-      }
+        {currentPage < totalPages
+          ? <Link title="Next Page" href={buildPageHref(currentPage + 1)}><FiChevronRight /></Link>
+          : <div className="disabled"><FiChevronRight /></div>
+        }
 
-      <Link href={buildPageHref(totalPages)}><FiChevronsRight /></Link>
+        <Link title="Last Page" href={buildPageHref(totalPages)}><FiChevronsRight /></Link>
+      </div>
+
+      <div className='table__pagination__count'>
+        <span>Page {currentPage} of {totalPages}</span>
+        <span>({count ?? 0} total items)</span>
+      </div>
     </div>
   )
 }
