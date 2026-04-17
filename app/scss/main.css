@@ -146,30 +146,59 @@ nav p {
   margin: 0;
 }
 
-.user-badge {
+.user-badge, .user-badge--clickable {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: rgb(102, 102, 229);
-  cursor: pointer;
   border-radius: 100%;
-  padding: 8px;
+  width: 40px;
+  aspect-ratio: 1;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  margin: 8px 8px 8px 0;
+}
+.user-badge--clickable {
   margin: 8px;
+  cursor: pointer;
 }
 
 .user-dropdown {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 3;
   position: absolute;
   right: 0;
   top: 50px;
-  background-color: red;
+  background-color: white;
+  border: solid 1px #AAA;
+  border-radius: 5px;
+  padding: 16px;
+}
+.user-dropdown p {
+  margin: 0;
+}
+.user-dropdown a {
+  margin: 8px 0;
+}
+.user-dropdown__details {
+  display: flex;
+  align-items: center;
 }
 .user-dropdown__clickaway {
+  display: none;
   position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  z-index: 2;
 }
 
 .user-dropdown.active, .user-dropdown__clickaway.active {
-  display: none;
+  display: flex;
 }
 
 .dashboard-page {

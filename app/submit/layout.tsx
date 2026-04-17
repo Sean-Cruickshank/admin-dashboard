@@ -27,7 +27,7 @@ export default async function SubmitLayout({children}: {children: React.ReactNod
 
   return (
     <>
-      <Navbar username={username} role={role} />
+      <Navbar username={username} role={role} email={user?.email} />
       <main>{children}</main>
     </>
   )
