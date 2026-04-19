@@ -39,14 +39,16 @@ export default function Navbar({ username, role, email } : NavbarProps) {
           <div className='user-dropdown__details'>
             <UserBadge clickable={false} />
             <div>
-              <p><b>{username}</b></p>
+              <p><b>{email}</b></p>
               <p><i>{role}</i></p>
+              
             </div>
           </div>
-          {email && <p>{email}</p>}
-          <Link href={'/submit'}>Submit Content</Link>
-          <Link href={'/dashboard/viewer'}>My Content</Link>
-          <LogoutButton />
+          <div className='user-dropdown__content'>
+            <Link href={'/submit'}>Submit Content</Link>
+            <Link href={'/dashboard/viewer'}>My Content</Link>
+            <LogoutButton />
+          </div>
         </div>
 
         <div

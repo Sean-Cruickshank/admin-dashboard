@@ -1,8 +1,9 @@
 nav {
-  background-color: #EEE;
+  background-color: var(--backA);
   display: flex;
   align-items: center;
   justify-content: right;
+  height: 50px;
   gap: 10px;
 
   & p {
@@ -15,17 +16,24 @@ nav {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(102, 102, 229);
+  background-color: var(--secondary);
+  border: solid 1px var(--borderA);
   border-radius: 100%;
   width: 40px;
   aspect-ratio: 1;
   user-select: none;
   margin: 8px 8px 8px 0;
+  padding: 0;
   
   &--clickable {
     margin: 8px;
     @extend .user-badge;
     cursor: pointer;
+  }
+
+  & b {
+    position: relative;
+    top: -1px;
   }
 }
 
@@ -35,24 +43,48 @@ nav {
   justify-content: center;
   z-index: 3;
   position: absolute;
-  right: 0;
-  top: 50px;
-  background-color: white;
-  border: solid 1px #AAA;
+  right: 5px;
+  top: 45px;
+  background-color: var(--backA);
+  border: solid 1px var(--borderA);
   border-radius: 5px;
-  padding: 16px;
-
-  & p {
-    margin: 0;
-  }
-
-  & a {
-    margin: 8px 0;
-  }
+  min-width: 200px;
 
   &__details {
     display: flex;
     align-items: center;
+    background-color: var(--backC);
+    border-radius: 4px 4px 0 0;
+    padding: 0 16px;
+    margin-bottom: 8px;
+
+    & p {
+      margin: 0;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    & p, a {
+      padding: 4px 16px;
+      margin: 0;
+    }
+
+    & a {
+      
+      &:hover {
+        background-color: var(--backC)
+      }
+    }
+
+    & button {
+      width: 60%;
+      margin-top: 32px;
+      margin-inline: auto;
+    }
   }
 
   &__clickaway {

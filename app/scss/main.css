@@ -1,6 +1,6 @@
 html {
   box-sizing: border-box;
-  background-color: lightgray;
+  background-color: var(--backB);
 }
 
 *, *::before, *::after {
@@ -12,12 +12,26 @@ body {
   padding: 0;
 }
 
+:root {
+  --primary: rgb(22, 104, 78);
+  --primaryLight: rgb(23, 125, 93);
+  --secondary: rgb(102, 229, 165);
+  --pending: rgb(255, 255, 164);
+  --approved: rgb(218, 254, 163);
+  --rejected: rgb(255, 215, 141);
+  --backA: white;
+  --backB: #EEE;
+  --backC: #CCC;
+  --borderA: #AAA;
+}
+
+html {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
 a {
   text-decoration: none;
   color: black;
-}
-a:hover {
-  text-decoration: underline;
 }
 
 .table__filters {
@@ -44,8 +58,9 @@ a:hover {
   margin: 8px;
 }
 .table__filters .active {
-  color: rgb(15, 168, 15);
-  border: solid 2px rgb(15, 168, 15);
+  color: white;
+  border: solid 1px var(--borderA);
+  background-color: var(--primary);
 }
 .table__dashboard {
   width: 85%;
@@ -99,7 +114,7 @@ a:hover {
   margin: 0 8px;
 }
 .table__pagination__buttons .active {
-  background-color: green;
+  background-color: var(--primary);
 }
 .table__pagination__buttons .disabled {
   background-color: grey;
@@ -118,27 +133,35 @@ a:hover {
   text-align: center;
 }
 .status__pending, .status__submitted {
-  background-color: rgb(255, 255, 164);
+  background-color: var(--pending);
 }
 .status__approved {
-  background-color: rgb(218, 254, 163);
+  background-color: var(--approved);
 }
 .status__rejected {
-  background-color: rgb(255, 215, 141);
+  background-color: var(--rejected);
 }
 
 button {
   padding: 12px 16px;
   margin: 8px;
-  border: none;
+  background-color: var(--primary);
+  color: white;
+  font-weight: bold;
+  border: solid 1px var(--borderA);
   border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: var(--primaryLight);
 }
 
 nav {
-  background-color: #EEE;
+  background-color: var(--backA);
   display: flex;
   align-items: center;
   justify-content: right;
+  height: 50px;
   gap: 10px;
 }
 nav p {
@@ -150,7 +173,8 @@ nav p {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(102, 102, 229);
+  background-color: var(--secondary);
+  border: solid 1px var(--borderA);
   border-radius: 100%;
   width: 40px;
   aspect-ratio: 1;
@@ -158,10 +182,15 @@ nav p {
      -moz-user-select: none;
           user-select: none;
   margin: 8px 8px 8px 0;
+  padding: 0;
 }
 .user-badge--clickable {
   margin: 8px;
   cursor: pointer;
+}
+.user-badge b, .user-badge--clickable b {
+  position: relative;
+  top: -1px;
 }
 
 .user-dropdown {
@@ -170,22 +199,40 @@ nav p {
   justify-content: center;
   z-index: 3;
   position: absolute;
-  right: 0;
-  top: 50px;
-  background-color: white;
-  border: solid 1px #AAA;
+  right: 5px;
+  top: 45px;
+  background-color: var(--backA);
+  border: solid 1px var(--borderA);
   border-radius: 5px;
-  padding: 16px;
-}
-.user-dropdown p {
-  margin: 0;
-}
-.user-dropdown a {
-  margin: 8px 0;
+  min-width: 200px;
 }
 .user-dropdown__details {
   display: flex;
   align-items: center;
+  background-color: var(--backC);
+  border-radius: 4px 4px 0 0;
+  padding: 0 16px;
+  margin-bottom: 8px;
+}
+.user-dropdown__details p {
+  margin: 0;
+}
+.user-dropdown__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.user-dropdown__content p, .user-dropdown__content a {
+  padding: 4px 16px;
+  margin: 0;
+}
+.user-dropdown__content a:hover {
+  background-color: var(--backC);
+}
+.user-dropdown__content button {
+  width: 60%;
+  margin-top: 32px;
+  margin-inline: auto;
 }
 .user-dropdown__clickaway {
   display: none;
