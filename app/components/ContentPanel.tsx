@@ -57,50 +57,51 @@ export default function ContentPanel({ content, role }: ContentPanelProps) {
       <p><strong>Status:</strong> {content.effective_status}</p>
       <p><strong>Submitted By:</strong> {content.profiles?.username}</p>
       <p><strong>Created:</strong> {new Date(content.created_at).toLocaleString()}</p>
-
-      <hr />
-
       <p>{content.body}</p>
 
-      {(content.effective_status === 'pending' || role === 'admin') && (
-        <form action={formAction}>
-          <input type="hidden" name="contentId" value={content.id} />
-          <input type="hidden" name="notes" value={notes} />
 
-          <div>
-            <label htmlFor="moderation-notes">Notes:</label>
-            <textarea
-              id="moderation-notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              disabled={pending}
-              rows={4}
-            />
-            {notesError && <p>{notesError}</p>}
-          </div>
+      {(role === 'admin' || role === 'moderator') && (content.effective_status === 'pending' || role === 'admin') && (
+        <>
+          <hr />
+          <form action={formAction}>
+            <input type="hidden" name="contentId" value={content.id} />
+            <input type="hidden" name="notes" value={notes} />
 
-          {state.message && <div>{state.message}</div>}
+            <div>
+              <label htmlFor="moderation-notes">Notes:</label>
+              <textarea
+                id="moderation-notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                disabled={pending}
+                rows={4}
+              />
+              {notesError && <p>{notesError}</p>}
+            </div>
 
-          <button
-            type="submit"
-            name="action"
-            value="approved"
-            onClick={(e) => { if (!handleStatus('approved')) e.preventDefault()} } 
-            disabled={pending || content.effective_status === 'approved'}
-          >
-            {pending && selectedAction === 'approved' ? 'Approving...' : 'Approve'}
-          </button>
+            {state.message && <div>{state.message}</div>}
 
-          <button
-            type="submit"
-            name="action"
-            value="rejected"
-            onClick={(e) => { if (!handleStatus('rejected')) e.preventDefault()} } 
-            disabled={pending || content.effective_status === 'rejected'}
-          >
-            {pending && selectedAction === 'rejected' ? 'Rejecting...' : 'Reject'}
-          </button>
-        </form>
+            <button
+              type="submit"
+              name="action"
+              value="approved"
+              onClick={(e) => { if (!handleStatus('approved')) e.preventDefault()} } 
+              disabled={pending || content.effective_status === 'approved'}
+            >
+              {pending && selectedAction === 'approved' ? 'Approving...' : 'Approve'}
+            </button>
+
+            <button
+              type="submit"
+              name="action"
+              value="rejected"
+              onClick={(e) => { if (!handleStatus('rejected')) e.preventDefault()} } 
+              disabled={pending || content.effective_status === 'rejected'}
+            >
+              {pending && selectedAction === 'rejected' ? 'Rejecting...' : 'Reject'}
+            </button>
+          </form>
+        </>
       )}
 
       {role === 'admin' && (

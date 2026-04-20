@@ -7,7 +7,6 @@ export default async function AdminDashboard() {
 
   return (
     <div className='dashboard-page'>
-      <h1>Admin Dashboard</h1>
       <ContentTable userId={user.id} mode={'all'} />
     </div>
   )

@@ -171,7 +171,7 @@ export async function moderateContent(
   revalidatePath('/dashboard/admin')
   revalidatePath('/dashboard/admin/audit')
   revalidatePath('/dashboard/moderator')
-  revalidatePath('/dashboard/viewer')
+  revalidatePath('/dashboard/home')
   revalidatePath(`/dashboard/content/${contentId}`)
   revalidatePath(`/dashboard/content/${contentId}/audit`)
 

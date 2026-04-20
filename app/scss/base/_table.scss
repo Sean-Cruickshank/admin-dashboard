@@ -1,6 +1,10 @@
 .table {
   &__filters {
-    width: 15%;
+    width: 13%;
+    height: 100%;
+    background-color: var(--backA);
+    border-radius: 15px;
+    margin: 1%;
     
     & div {
       display: flex;
@@ -10,13 +14,17 @@
     }
 
     & a {
-      width: 60%;
+      width: 80%;
       text-align: center;
       text-decoration: none;
       margin: 4px;
       padding: 4px 8px;
       border: solid 2px transparent;
       border-radius: 5px;
+
+      &:hover {
+        background-color: var(--backB);
+      }
     }
 
     & h2, h3 {
@@ -24,15 +32,26 @@
       margin: 8px;
     }
 
+    
+
     & .active {
       color: white;
       border: solid 1px var(--borderA);
       background-color: var(--primary);
+
+      &:hover {
+        background-color: var(--primaryLight);
+      }
     }
   }
 
   &__dashboard {
     width: 85%;
+
+    & h1 {
+      width: max-content;
+      margin-inline: auto;
+    }
     
     & table {
       width: 100%;
@@ -73,8 +92,6 @@
   }
 
   &__pagination {
-    
-
     &__buttons {
       width: 100%;
       display: flex;
@@ -86,12 +103,17 @@
       & a, div {
         background-color: black;
         color: white;
+        font-weight: bold;
         width: 32px;
         aspect-ratio: 1;
         display: flex;
         justify-content: center;
         align-items: center;
         margin: 0 8px;
+
+        &:hover {
+          background-color: var(--primaryLight);
+        }
       }
   
       & .active {
@@ -101,6 +123,9 @@
       & .disabled {
         background-color: grey;
         cursor: default;
+        &:hover {
+          background-color: grey;
+        }
       }
     }
 
@@ -113,7 +138,7 @@
 }
 
 .status {
-  width: 80px;
+  width: 100px;
   padding: 4px 8px;
   border-radius: 10px;
   text-align: center;

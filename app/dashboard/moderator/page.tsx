@@ -6,7 +6,6 @@ export default async function ModeratorDashboard() {
 
   return (
     <div className='dashboard-page'>
-      <h1>Moderator Dashboard</h1>
       <ContentTable userId={user.id} mode={'all'}/>
     </div>
   )

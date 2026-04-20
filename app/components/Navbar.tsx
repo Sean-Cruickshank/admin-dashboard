@@ -46,7 +46,7 @@ export default function Navbar({ username, role, email } : NavbarProps) {
           </div>
           <div className='user-dropdown__content'>
             <Link href={'/submit'}>Submit Content</Link>
-            <Link href={'/dashboard/viewer'}>My Content</Link>
+            <Link href={'/dashboard/home'}>My Content</Link>
             <LogoutButton />
           </div>
         </div>
@@ -63,8 +63,8 @@ export default function Navbar({ username, role, email } : NavbarProps) {
     <>
       <nav>
         <Link href={'/submit'}>Submit Content</Link>
-        <Link href={'/dashboard/viewer'}>My Content</Link>
-        <Link href={'/dashboard'}>Dashboard</Link>
+        <Link href={'/dashboard/home'}>Home</Link>
+        {(role === 'admin' || role === 'moderator') && <Link href={'/dashboard'}>Dashboard</Link>}
         {role === 'admin' && <Link href={'/dashboard/admin/audit'}>Audits</Link>}
 
         { role

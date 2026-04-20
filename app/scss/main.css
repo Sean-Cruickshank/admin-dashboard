@@ -35,7 +35,11 @@ a {
 }
 
 .table__filters {
-  width: 15%;
+  width: 13%;
+  height: 100%;
+  background-color: var(--backA);
+  border-radius: 15px;
+  margin: 1%;
 }
 .table__filters div {
   display: flex;
@@ -44,13 +48,16 @@ a {
   margin-bottom: 32px;
 }
 .table__filters a {
-  width: 60%;
+  width: 80%;
   text-align: center;
   text-decoration: none;
   margin: 4px;
   padding: 4px 8px;
   border: solid 2px transparent;
   border-radius: 5px;
+}
+.table__filters a:hover {
+  background-color: var(--backB);
 }
 .table__filters h2, .table__filters h3 {
   width: -moz-max-content;
@@ -62,8 +69,16 @@ a {
   border: solid 1px var(--borderA);
   background-color: var(--primary);
 }
+.table__filters .active:hover {
+  background-color: var(--primaryLight);
+}
 .table__dashboard {
   width: 85%;
+}
+.table__dashboard h1 {
+  width: -moz-max-content;
+  width: max-content;
+  margin-inline: auto;
 }
 .table__dashboard table {
   width: 100%;
@@ -106,12 +121,16 @@ a {
 .table__pagination__buttons a, .table__pagination__buttons div {
   background-color: black;
   color: white;
+  font-weight: bold;
   width: 32px;
   aspect-ratio: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 0 8px;
+}
+.table__pagination__buttons a:hover, .table__pagination__buttons div:hover {
+  background-color: var(--primaryLight);
 }
 .table__pagination__buttons .active {
   background-color: var(--primary);
@@ -120,6 +139,9 @@ a {
   background-color: grey;
   cursor: default;
 }
+.table__pagination__buttons .disabled:hover {
+  background-color: grey;
+}
 .table__pagination__count {
   display: flex;
   flex-direction: column;
@@ -127,7 +149,7 @@ a {
 }
 
 .status, .status__rejected, .status__approved, .status__pending, .status__submitted {
-  width: 80px;
+  width: 100px;
   padding: 4px 8px;
   border-radius: 10px;
   text-align: center;
@@ -162,7 +184,7 @@ nav {
   align-items: center;
   justify-content: right;
   height: 50px;
-  gap: 10px;
+  gap: 30px;
 }
 nav p {
   padding: 0;
@@ -253,10 +275,6 @@ nav p {
   flex-direction: column;
   align-items: center;
 }
-.dashboard-page h1 {
-  width: -moz-max-content;
-  width: max-content;
-}
 
 .content-table {
   display: flex;
@@ -268,10 +286,6 @@ nav p {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-.global-audit-page h1 {
-  width: -moz-max-content;
-  width: max-content;
 }
 
 .audit-table {
