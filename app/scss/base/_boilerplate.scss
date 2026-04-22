@@ -1,6 +1,8 @@
 html {
   box-sizing: border-box;
   background-color: var(--backB);
+  overflow-x: hidden;
+  height: 200vh;
 }
 
 *, *::before, *::after {
