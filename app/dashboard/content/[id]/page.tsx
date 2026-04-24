@@ -23,6 +23,7 @@ export default async function ReviewPage(props: { params: Promise<{ id: string }
     body: content.body!,
     status: content.status!,
     submitted_by: content.submitted_by,
+    reviewed_by: content.reviewed_by,
     created_at: content.created_at!,
     demo_override_status: content.demo_override_status,
     demo_override_expires_at: content.demo_override_expires_at,

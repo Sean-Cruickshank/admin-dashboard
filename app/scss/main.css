@@ -2,7 +2,6 @@ html {
   box-sizing: border-box;
   background-color: var(--backB);
   overflow-x: hidden;
-  height: 200vh;
 }
 
 *, *::before, *::after {
@@ -14,6 +13,10 @@ body {
   padding: 0;
 }
 
+main {
+  padding-top: 50px;
+}
+
 :root {
   --primary: rgb(22, 104, 78);
   --primaryLight: rgb(23, 125, 93);
@@ -23,7 +26,7 @@ body {
   --rejected: rgb(255, 215, 141);
   --backA: white;
   --backB: #EEE;
-  --backC: #CCC;
+  --backC: #DDD;
   --borderA: #AAA;
 }
 
@@ -151,10 +154,13 @@ a {
 }
 
 .status, .status__rejected, .status__approved, .status__pending, .status__submitted {
-  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90px;
+  height: 25px;
   padding: 4px 8px;
   border-radius: 10px;
-  text-align: center;
 }
 .status__pending, .status__submitted {
   background-color: var(--pending);
@@ -179,17 +185,23 @@ button {
 button:hover {
   background-color: var(--primaryLight);
 }
+button.disabled {
+  background-color: grey;
+  color: lightgray;
+  cursor: initial;
+}
 
 nav {
-  background-color: var(--backA);
   display: flex;
   position: fixed;
+  z-index: 2;
   align-items: center;
   justify-content: right;
   height: 50px;
   width: 100%;
+  background-color: var(--backA);
+  border-bottom: solid 1px var(--borderA);
   gap: 30px;
-  z-index: 2;
 }
 nav p {
   padding: 0;
@@ -296,19 +308,27 @@ nav p {
 .content-panel__content.collapsed {
   width: calc(100% - 10px);
 }
+.content-panel__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.content-panel__title h1 {
+  margin: 0;
+  padding: 0;
+}
 .content-panel .moderation-form {
   position: fixed;
-  display: flex;
   top: 50px;
   right: 0;
-  flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 50px);
   width: 20%;
   background-color: var(--backC);
+  border-left: solid 1px var(--borderA);
   overflow: hidden;
   transition: 0.5s;
   visibility: initial;
-  padding: 0 20px;
+  padding: 8px 20px;
 }
 .content-panel .moderation-form.collapsed {
   right: calc(-20% + 10px);
@@ -317,9 +337,55 @@ nav p {
   visibility: collapse;
   transition: 0.5s;
 }
+.content-panel .moderation-form__content {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  position: relative;
+}
+.content-panel .moderation-form__content h2 {
+  margin: 0;
+  margin-bottom: 8px;
+}
+.content-panel .moderation-form__content a {
+  color: var(--primary);
+}
+.content-panel .moderation-form__content a:hover {
+  color: var(--primaryLight);
+}
+.content-panel .moderation-form__content .content-id {
+  font-size: 0.7rem;
+}
+.content-panel .moderation-form__content form {
+  margin-top: 16px;
+}
+.content-panel .moderation-form__status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+.content-panel .moderation-form__notes textarea {
+  width: 100%;
+  height: 100px;
+  resize: none;
+  border: solid 1px var(--borderA);
+  border-radius: 2px;
+}
+.content-panel .moderation-form__notes textarea.notes-error {
+  border: solid 1px red;
+}
+.content-panel .moderation-form__notes p {
+  color: red;
+}
+.content-panel .moderation-form__buttons {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
 .content-panel .moderation-form__toggle {
   position: fixed;
-  top: calc(10% + 50px);
+  top: 95px;
   right: calc(20% - 15px);
   transform: translateY(-50%);
   margin: 0;

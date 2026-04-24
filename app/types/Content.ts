@@ -8,6 +8,7 @@ export type Content = Pick<ContentSchema,
   | 'body'
   | 'status'
   | 'submitted_by'
+  | 'reviewed_by'
   | 'created_at'
   | 'demo_override_status'
   | 'demo_override_expires_at'

@@ -55,9 +55,12 @@ export default function ContentPanel({ content, role }: ContentPanelProps) {
           Back
         </button>
 
-        <h1>{content.title}</h1>
-
-        <p><strong>Status:</strong> {content.effective_status}</p>
+        <div className='content-panel__title'>
+          <h1>{content.title}</h1>
+          <div className={`status__${content.effective_status}`}>
+            {content.effective_status}
+          </div>
+        </div>
         <p><strong>Submitted By:</strong> {content.profiles?.username}</p>
         <p><strong>Created:</strong> {new Date(content.created_at).toLocaleString()}</p>
         <p>{content.body}</p>
@@ -73,14 +76,18 @@ export default function ContentPanel({ content, role }: ContentPanelProps) {
                   View Post Audit History
                 </Link>
               )}
+              <p className='content-id'>({content.id})</p>
+              <p><strong>Status: </strong>{content.effective_status}</p>
+              <p><strong>{content.effective_status} By: </strong>{content.reviewed_by}</p>
+
               <form action={formAction}>
                 <input type="hidden" name="contentId" value={content.id} />
                 <input type="hidden" name="notes" value={notes} />
 
-                <div>
-                  <label htmlFor="moderation-notes">Notes:</label>
+                <div className='moderation-form__notes'>
                   <textarea
-                    id="moderation-notes"
+                    className={notesError ? 'notes-error' : ''}
+                    placeholder='Moderation notes'
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     disabled={pending}
@@ -91,25 +98,30 @@ export default function ContentPanel({ content, role }: ContentPanelProps) {
 
                 {state.message && <div>{state.message}</div>}
 
-                <button
-                  type="submit"
-                  name="action"
-                  value="approved"
-                  onClick={(e) => { if (!handleStatus('approved')) e.preventDefault()} } 
-                  disabled={pending || content.effective_status === 'approved'}
-                  >
-                  {pending && selectedAction === 'approved' ? 'Approving...' : 'Approve'}
-                </button>
+                <div className='moderation-form__buttons'>
+                  <button
+                    type="submit"
+                    name="action"
+                    value="approved"
+                    className={content.effective_status === 'approved' ? 'disabled' : ''}
+                    onClick={(e) => { if (!handleStatus('approved')) e.preventDefault()} } 
+                    disabled={pending || content.effective_status === 'approved'}
+                    >
+                    {pending && selectedAction === 'approved' ? 'Approving...' : 'Approve'}
+                  </button>
 
-                <button
-                  type="submit"
-                  name="action"
-                  value="rejected"
-                  onClick={(e) => { if (!handleStatus('rejected')) e.preventDefault()} } 
-                  disabled={pending || content.effective_status === 'rejected'}
-                >
-                  {pending && selectedAction === 'rejected' ? 'Rejecting...' : 'Reject'}
-                </button>
+                  <button
+                    type="submit"
+                    name="action"
+                    value="rejected"
+                    className={content.effective_status === 'rejected' ? 'disabled' : ''}
+                    onClick={(e) => { if (!handleStatus('rejected')) e.preventDefault()} } 
+                    disabled={pending || content.effective_status === 'rejected'}
+                  >
+                    {pending && selectedAction === 'rejected' ? 'Rejecting...' : 'Reject'}
+                  </button>
+
+                </div>
               </form>
             </div>
 

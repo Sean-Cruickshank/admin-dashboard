@@ -11,4 +11,10 @@ button {
   &:hover {
     background-color: var(--primaryLight);
   }
+
+  &.disabled {
+    background-color: grey;
+    color: lightgray;
+    cursor: initial;
+  }
 }

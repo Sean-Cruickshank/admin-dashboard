@@ -1,13 +1,14 @@
 nav {
-  background-color: var(--backA);
   display: flex;
   position: fixed;
+  z-index: 2;
   align-items: center;
   justify-content: right;
   height: 50px;
   width: 100%;
+  background-color: var(--backA);
+  border-bottom: solid 1px var(--borderA);
   gap: 30px;
-  z-index: 2;
 
   & p {
     padding: 0;
