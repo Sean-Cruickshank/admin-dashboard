@@ -1,6 +1,3 @@
-Notes for table row links
-- Added 2 helper functions
-- Removed link on title row on ContentTable and AuditTable
-- Added onClick and onKeydown to <tr> on ContentTable and AuditTable
-- Added tabIndex to make them focusable with the tab key
-- Added role and aria-label for accessibility
+1/5
+- reviewed_by and reviewed_at rows don't update for demo accounts
+- Will probably need demo_reviewed_by and demo_reviewed_at columns to avoid confusion

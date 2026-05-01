@@ -3,12 +3,12 @@
 import { useActionState, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ContentWithProfile } from '../types/Content'
+import { ContentWithProfiles } from '../types/Content'
 import { moderateContent, type ModerateContentState } from '@/app/dashboard/content/[id]/action'
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 type ContentPanelProps = {
-  content: ContentWithProfile
+  content: ContentWithProfiles
   role: string
 }
 
@@ -25,6 +25,8 @@ export default function ContentPanel({ content, role }: ContentPanelProps) {
   const [notesError, setNotesError] = useState<string | null>(null)
   const [selectedAction, setSelectedAction] = useState<'approved' | 'rejected' | null>(null)
   const [moderationCollapse, setModerationCollapse] = useState(false)
+
+  const formattedStatus = content.effective_status[0].toUpperCase() + content.effective_status.slice(1)
 
   useEffect(() => {
     if (state.success) {
@@ -48,6 +50,8 @@ export default function ContentPanel({ content, role }: ContentPanelProps) {
     return true
   }
 
+  
+
   return (
     <div className='content-panel'>
       <div className={moderationCollapse ? 'content-panel__content collapsed' : 'content-panel__content'}>
@@ -61,7 +65,7 @@ export default function ContentPanel({ content, role }: ContentPanelProps) {
             {content.effective_status}
           </div>
         </div>
-        <p><strong>Submitted By:</strong> {content.profiles?.username}</p>
+        <p><strong>Submitted By:</strong> {content.submitted_by_profiles?.username}</p>
         <p><strong>Created:</strong> {new Date(content.created_at).toLocaleString()}</p>
         <p>{content.body}</p>
       </div>
@@ -78,7 +82,9 @@ export default function ContentPanel({ content, role }: ContentPanelProps) {
               )}
               <p className='content-id'>({content.id})</p>
               <p><strong>Status: </strong>{content.effective_status}</p>
-              <p><strong>{content.effective_status} By: </strong>{content.reviewed_by}</p>
+              {content.effective_status !== 'pending' &&
+                <p><strong>{formattedStatus} by: </strong>{content.reviewed_by_profiles?.username}</p>
+              }
 
               <form action={formAction}>
                 <input type="hidden" name="contentId" value={content.id} />

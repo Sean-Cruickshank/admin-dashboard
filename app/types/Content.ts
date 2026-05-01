@@ -16,6 +16,11 @@ export type Content = Pick<ContentSchema,
 
 export type ContentWithProfile = Content & { profiles: { username: string } | null }
 
+export type ContentWithProfiles = Content & {
+  submitted_by_profiles: { username: string } | null,
+  reviewed_by_profiles: { username: string } | null
+}
+
 export type Status = 'pending' | 'approved' | 'rejected' | 'all'
 
 export type Mode = 'all' | 'user' | 'approved'
