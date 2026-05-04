@@ -5,7 +5,6 @@ export default async function GlobalAuditPage() {
   await requireRole(['admin'])
   return (
     <div className="global-audit-page">
-      <h1>Audit History</h1>
       <AuditTable />
     </div>
   )

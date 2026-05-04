@@ -134,6 +134,8 @@ export default function AuditTable() {
       </div>
 
       <div className="table__dashboard">
+        <h1>Audit History</h1>
+        <h2>Recent Submissions</h2>
         <table>
           <colgroup>
             <col style={{width: '25%'}}></col>

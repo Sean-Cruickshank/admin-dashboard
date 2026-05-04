@@ -10,7 +10,7 @@ export default async function DashboardEntry() {
     case 'moderator':
       redirect('/dashboard/moderator')
     case 'viewer':
-      redirect('/dashboard/viewer')
+      redirect('/dashboard/home')
     default:
       redirect('/login')
   }

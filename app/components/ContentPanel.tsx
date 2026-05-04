@@ -3,11 +3,12 @@
 import { useActionState, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ContentWithProfile } from '../types/Content'
+import { ContentWithProfiles } from '../types/Content'
 import { moderateContent, type ModerateContentState } from '@/app/dashboard/content/[id]/action'
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 type ContentPanelProps = {
-  content: ContentWithProfile
+  content: ContentWithProfiles
   role: string
 }
 
@@ -23,6 +24,9 @@ export default function ContentPanel({ content, role }: ContentPanelProps) {
   const [notes, setNotes] = useState('')
   const [notesError, setNotesError] = useState<string | null>(null)
   const [selectedAction, setSelectedAction] = useState<'approved' | 'rejected' | null>(null)
+  const [moderationCollapse, setModerationCollapse] = useState(false)
+
+  const formattedStatus = content.effective_status[0].toUpperCase() + content.effective_status.slice(1)
 
   useEffect(() => {
     if (state.success) {
@@ -46,68 +50,96 @@ export default function ContentPanel({ content, role }: ContentPanelProps) {
     return true
   }
 
+  
+
   return (
-    <div>
-      <button onClick={() => router.back()} disabled={pending}>
-        Back
-      </button>
+    <div className='content-panel'>
+      <div className={moderationCollapse ? 'content-panel__content collapsed' : 'content-panel__content'}>
+        <button onClick={() => router.back()} disabled={pending}>
+          Back
+        </button>
 
-      <h1>{content.title}</h1>
-
-      <p><strong>Status:</strong> {content.effective_status}</p>
-      <p><strong>Submitted By:</strong> {content.profiles?.username}</p>
-      <p><strong>Created:</strong> {new Date(content.created_at).toLocaleString()}</p>
-
-      <hr />
-
-      <p>{content.body}</p>
-
-      {(content.effective_status === 'pending' || role === 'admin') && (
-        <form action={formAction}>
-          <input type="hidden" name="contentId" value={content.id} />
-          <input type="hidden" name="notes" value={notes} />
-
-          <div>
-            <label htmlFor="moderation-notes">Notes:</label>
-            <textarea
-              id="moderation-notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              disabled={pending}
-              rows={4}
-            />
-            {notesError && <p>{notesError}</p>}
+        <div className='content-panel__title'>
+          <h1>{content.title}</h1>
+          <div className={`status__${content.effective_status}`}>
+            {content.effective_status}
           </div>
+        </div>
+        <p><strong>Submitted By:</strong> {content.submitted_by_profiles?.username}</p>
+        <p><strong>Created:</strong> {new Date(content.created_at).toLocaleString()}</p>
+        <p>{content.body}</p>
+      </div>
 
-          {state.message && <div>{state.message}</div>}
+      {(role === 'admin' || role === 'moderator') && (content.effective_status === 'pending' || role === 'admin') && (
+        <>
+          <div className={moderationCollapse ? 'moderation-form collapsed' : 'moderation-form'}>
+            <div className='moderation-form__content'>
+              <h2>Moderation Settings</h2>
+              {role === 'admin' && (
+                <Link href={`/dashboard/content/${content.id}/audit`}>
+                  View Post Audit History
+                </Link>
+              )}
+              <p className='content-id'>({content.id})</p>
+              <p><strong>Status: </strong>{content.effective_status}</p>
+              {content.effective_status !== 'pending' &&
+                <p><strong>{formattedStatus} by: </strong>{content.reviewed_by_profiles?.username}</p>
+              }
 
-          <button
-            type="submit"
-            name="action"
-            value="approved"
-            onClick={(e) => { if (!handleStatus('approved')) e.preventDefault()} } 
-            disabled={pending || content.effective_status === 'approved'}
-          >
-            {pending && selectedAction === 'approved' ? 'Approving...' : 'Approve'}
-          </button>
+              <form action={formAction}>
+                <input type="hidden" name="contentId" value={content.id} />
+                <input type="hidden" name="notes" value={notes} />
 
-          <button
-            type="submit"
-            name="action"
-            value="rejected"
-            onClick={(e) => { if (!handleStatus('rejected')) e.preventDefault()} } 
-            disabled={pending || content.effective_status === 'rejected'}
-          >
-            {pending && selectedAction === 'rejected' ? 'Rejecting...' : 'Reject'}
-          </button>
-        </form>
+                <div className='moderation-form__notes'>
+                  <textarea
+                    className={notesError ? 'notes-error' : ''}
+                    placeholder='Moderation notes'
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    disabled={pending}
+                    rows={4}
+                  />
+                  {notesError && <p>{notesError}</p>}
+                </div>
+
+                {state.message && <div>{state.message}</div>}
+
+                <div className='moderation-form__buttons'>
+                  <button
+                    type="submit"
+                    name="action"
+                    value="approved"
+                    className={content.effective_status === 'approved' ? 'disabled' : ''}
+                    onClick={(e) => { if (!handleStatus('approved')) e.preventDefault()} } 
+                    disabled={pending || content.effective_status === 'approved'}
+                    >
+                    {pending && selectedAction === 'approved' ? 'Approving...' : 'Approve'}
+                  </button>
+
+                  <button
+                    type="submit"
+                    name="action"
+                    value="rejected"
+                    className={content.effective_status === 'rejected' ? 'disabled' : ''}
+                    onClick={(e) => { if (!handleStatus('rejected')) e.preventDefault()} } 
+                    disabled={pending || content.effective_status === 'rejected'}
+                  >
+                    {pending && selectedAction === 'rejected' ? 'Rejecting...' : 'Reject'}
+                  </button>
+
+                </div>
+              </form>
+            </div>
+
+          </div>
+            <button
+              onClick={() => setModerationCollapse(prev => !prev)}
+              className={moderationCollapse ? 'moderation-form__toggle collapsed' : 'moderation-form__toggle'}>
+              {moderationCollapse ? <FiChevronLeft /> : <FiChevronRight />}
+            </button>
+        </>
       )}
 
-      {role === 'admin' && (
-        <Link href={`/dashboard/content/${content.id}/audit`}>
-          View Audit Logs
-        </Link>
-      )}
     </div>
   )
 }

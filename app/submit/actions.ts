@@ -122,7 +122,7 @@ export async function submitContent(
   revalidatePath('/dashboard/admin')
   revalidatePath('/dashboard/admin/audit')
   revalidatePath('/dashboard/moderator')
-  revalidatePath('/dashboard/viewer')
+  revalidatePath('/dashboard/home')
 
   return {
     success: true,

@@ -1,6 +1,7 @@
 html {
   box-sizing: border-box;
-  background-color: lightgray;
+  background-color: var(--backB);
+  overflow-x: hidden;
 }
 
 *, *::before, *::after {
@@ -12,16 +13,38 @@ body {
   padding: 0;
 }
 
+main {
+  padding-top: 50px;
+}
+
+:root {
+  --primary: rgb(22, 104, 78);
+  --primaryLight: rgb(23, 125, 93);
+  --secondary: rgb(102, 229, 165);
+  --pending: rgb(255, 255, 164);
+  --approved: rgb(218, 254, 163);
+  --rejected: rgb(255, 215, 141);
+  --backA: white;
+  --backB: #EEE;
+  --backC: #DDD;
+  --borderA: #AAA;
+}
+
+html {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
 a {
   text-decoration: none;
   color: black;
 }
-a:hover {
-  text-decoration: underline;
-}
 
 .table__filters {
-  width: 15%;
+  width: 13%;
+  height: 100%;
+  background-color: var(--backA);
+  border-radius: 15px;
+  margin: 1%;
 }
 .table__filters div {
   display: flex;
@@ -30,7 +53,7 @@ a:hover {
   margin-bottom: 32px;
 }
 .table__filters a {
-  width: 60%;
+  width: 80%;
   text-align: center;
   text-decoration: none;
   margin: 4px;
@@ -38,17 +61,29 @@ a:hover {
   border: solid 2px transparent;
   border-radius: 5px;
 }
+.table__filters a:hover {
+  background-color: var(--backB);
+}
 .table__filters h2, .table__filters h3 {
   width: -moz-max-content;
   width: max-content;
   margin: 8px;
 }
 .table__filters .active {
-  color: rgb(15, 168, 15);
-  border: solid 2px rgb(15, 168, 15);
+  color: white;
+  border: solid 1px var(--borderA);
+  background-color: var(--primary);
+}
+.table__filters .active:hover {
+  background-color: var(--primaryLight);
 }
 .table__dashboard {
   width: 85%;
+}
+.table__dashboard h1 {
+  width: -moz-max-content;
+  width: max-content;
+  margin-inline: auto;
 }
 .table__dashboard table {
   width: 100%;
@@ -91,6 +126,7 @@ a:hover {
 .table__pagination__buttons a, .table__pagination__buttons div {
   background-color: black;
   color: white;
+  font-weight: bold;
   width: 32px;
   aspect-ratio: 1;
   display: flex;
@@ -98,12 +134,18 @@ a:hover {
   align-items: center;
   margin: 0 8px;
 }
+.table__pagination__buttons a:hover, .table__pagination__buttons div:hover {
+  background-color: var(--primaryLight);
+}
 .table__pagination__buttons .active {
-  background-color: green;
+  background-color: var(--primary);
 }
 .table__pagination__buttons .disabled {
   background-color: grey;
   cursor: default;
+}
+.table__pagination__buttons .disabled:hover {
+  background-color: grey;
 }
 .table__pagination__count {
   display: flex;
@@ -112,48 +154,146 @@ a:hover {
 }
 
 .status, .status__rejected, .status__approved, .status__pending, .status__submitted {
-  width: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90px;
+  height: 25px;
   padding: 4px 8px;
   border-radius: 10px;
-  text-align: center;
 }
 .status__pending, .status__submitted {
-  background-color: rgb(255, 255, 164);
+  background-color: var(--pending);
 }
 .status__approved {
-  background-color: rgb(218, 254, 163);
+  background-color: var(--approved);
 }
 .status__rejected {
-  background-color: rgb(255, 215, 141);
+  background-color: var(--rejected);
 }
 
 button {
   padding: 12px 16px;
   margin: 8px;
-  border: none;
+  background-color: var(--primary);
+  color: white;
+  font-weight: bold;
+  border: solid 1px var(--borderA);
   border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: var(--primaryLight);
+}
+button.disabled {
+  background-color: grey;
+  color: lightgray;
+  cursor: initial;
 }
 
 nav {
-  background-color: #EEE;
   display: flex;
+  position: fixed;
+  z-index: 2;
   align-items: center;
   justify-content: right;
-  gap: 10px;
+  height: 50px;
+  width: 100%;
+  background-color: var(--backA);
+  border-bottom: solid 1px var(--borderA);
+  gap: 30px;
 }
 nav p {
   padding: 0;
   margin: 0;
 }
 
+.user-badge, .user-badge--clickable {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--secondary);
+  border: solid 1px var(--borderA);
+  border-radius: 100%;
+  width: 40px;
+  aspect-ratio: 1;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  margin: 8px 8px 8px 0;
+  padding: 0;
+}
+.user-badge--clickable {
+  margin: 8px;
+  cursor: pointer;
+}
+.user-badge--clickable:hover {
+  opacity: 0.8;
+}
+.user-badge b, .user-badge--clickable b {
+  position: relative;
+  top: -1px;
+}
+
+.user-dropdown {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 99;
+  position: fixed;
+  right: 5px;
+  top: 45px;
+  background-color: var(--backA);
+  border: solid 1px var(--borderA);
+  border-radius: 5px;
+  min-width: 200px;
+}
+.user-dropdown__details {
+  display: flex;
+  align-items: center;
+  background-color: var(--backC);
+  border-radius: 4px 4px 0 0;
+  padding: 0 16px;
+  margin-bottom: 8px;
+}
+.user-dropdown__details p {
+  margin: 0;
+}
+.user-dropdown__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.user-dropdown__content p, .user-dropdown__content a {
+  padding: 4px 16px;
+  margin: 0;
+}
+.user-dropdown__content a:hover {
+  background-color: var(--backC);
+}
+.user-dropdown__content button {
+  width: 60%;
+  margin-top: 32px;
+  margin-inline: auto;
+}
+.user-dropdown__clickaway {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 98;
+}
+
+.user-dropdown.active, .user-dropdown__clickaway.active {
+  display: flex;
+}
+
 .dashboard-page {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-.dashboard-page h1 {
-  width: -moz-max-content;
-  width: max-content;
 }
 
 .content-table {
@@ -162,14 +302,110 @@ nav p {
   width: 100%;
 }
 
+.content-panel__content {
+  width: 80%;
+}
+.content-panel__content.collapsed {
+  width: calc(100% - 10px);
+}
+.content-panel__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.content-panel__title h1 {
+  margin: 0;
+  padding: 0;
+}
+.content-panel .moderation-form {
+  position: fixed;
+  top: 50px;
+  right: 0;
+  height: calc(100vh - 50px);
+  width: 20%;
+  background-color: var(--backC);
+  border-left: solid 1px var(--borderA);
+  overflow: hidden;
+  transition: 0.5s;
+  visibility: initial;
+  padding: 8px 20px;
+}
+.content-panel .moderation-form.collapsed {
+  right: calc(-20% + 10px);
+}
+.content-panel .moderation-form.collapsed .moderation-form__content {
+  visibility: collapse;
+  transition: 0.5s;
+}
+.content-panel .moderation-form__content {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  position: relative;
+}
+.content-panel .moderation-form__content h2 {
+  margin: 0;
+  margin-bottom: 8px;
+}
+.content-panel .moderation-form__content a {
+  color: var(--primary);
+}
+.content-panel .moderation-form__content a:hover {
+  color: var(--primaryLight);
+}
+.content-panel .moderation-form__content .content-id {
+  font-size: 0.7rem;
+}
+.content-panel .moderation-form__content form {
+  margin-top: 16px;
+}
+.content-panel .moderation-form__status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+.content-panel .moderation-form__notes textarea {
+  width: 100%;
+  height: 100px;
+  resize: none;
+  border: solid 1px var(--borderA);
+  border-radius: 2px;
+}
+.content-panel .moderation-form__notes textarea.notes-error {
+  border: solid 1px red;
+}
+.content-panel .moderation-form__notes p {
+  color: red;
+}
+.content-panel .moderation-form__buttons {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+.content-panel .moderation-form__toggle {
+  position: fixed;
+  top: 95px;
+  right: calc(20% - 15px);
+  transform: translateY(-50%);
+  margin: 0;
+  padding: 0;
+  width: 30px;
+  aspect-ratio: 0.5;
+  transition: 0.5s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+}
+.content-panel .moderation-form__toggle.collapsed {
+  right: -5px;
+}
+
 .global-audit-page {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-.global-audit-page h1 {
-  width: -moz-max-content;
-  width: max-content;
 }
 
 .audit-table {

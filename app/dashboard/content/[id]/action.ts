@@ -113,6 +113,8 @@ export async function moderateContent(
       .update({
         demo_override_status: moderationAction,
         demo_override_expires_at: new Date(Date.now() + DEMO_LIFESPAN).toISOString(),
+        reviewed_by: user.id,
+        reviewed_at: new Date().toISOString(),
       })
       .eq('id', contentId)
 
@@ -171,7 +173,7 @@ export async function moderateContent(
   revalidatePath('/dashboard/admin')
   revalidatePath('/dashboard/admin/audit')
   revalidatePath('/dashboard/moderator')
-  revalidatePath('/dashboard/viewer')
+  revalidatePath('/dashboard/home')
   revalidatePath(`/dashboard/content/${contentId}`)
   revalidatePath(`/dashboard/content/${contentId}/audit`)
 

@@ -1,6 +1,7 @@
 html {
   box-sizing: border-box;
-  background-color: lightgray;
+  background-color: var(--backB);
+  overflow-x: hidden;
 }
 
 *, *::before, *::after {
@@ -10,4 +11,8 @@ html {
 body {
   margin: 0;
   padding: 0;
+}
+
+main {
+  padding-top: 50px;
 }

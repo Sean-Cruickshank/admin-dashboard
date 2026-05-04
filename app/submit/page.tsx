@@ -2,7 +2,7 @@ import SubmissionForm from '@/app/components/SubmissionForm'
 
 export default function SubmitPage() {
   return (
-    <main>
+    <>
       <div>
         <h1>Submit Content</h1>
         <p>
@@ -13,6 +13,6 @@ export default function SubmitPage() {
       <div>
         <SubmissionForm />
       </div>
-    </main>
+    </>
   )
 }

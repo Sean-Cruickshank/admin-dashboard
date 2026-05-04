@@ -1,12 +1,111 @@
 nav {
-  background-color: #EEE;
   display: flex;
+  position: fixed;
+  z-index: 2;
   align-items: center;
   justify-content: right;
-  gap: 10px;
+  height: 50px;
+  width: 100%;
+  background-color: var(--backA);
+  border-bottom: solid 1px var(--borderA);
+  gap: 30px;
 
   & p {
     padding: 0;
     margin: 0;
   }
+}
+
+.user-badge {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--secondary);
+  border: solid 1px var(--borderA);
+  border-radius: 100%;
+  width: 40px;
+  aspect-ratio: 1;
+  user-select: none;
+  margin: 8px 8px 8px 0;
+  padding: 0;
+  
+  &--clickable {
+    margin: 8px;
+    @extend .user-badge;
+    cursor: pointer;
+    
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  & b {
+    position: relative;
+    top: -1px;
+  }
+}
+
+.user-dropdown {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 99;
+  position: fixed;
+  right: 5px;
+  top: 45px;
+  background-color: var(--backA);
+  border: solid 1px var(--borderA);
+  border-radius: 5px;
+  min-width: 200px;
+
+  &__details {
+    display: flex;
+    align-items: center;
+    background-color: var(--backC);
+    border-radius: 4px 4px 0 0;
+    padding: 0 16px;
+    margin-bottom: 8px;
+
+    & p {
+      margin: 0;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    & p, a {
+      padding: 4px 16px;
+      margin: 0;
+    }
+
+    & a {
+      
+      &:hover {
+        background-color: var(--backC)
+      }
+    }
+
+    & button {
+      width: 60%;
+      margin-top: 32px;
+      margin-inline: auto;
+    }
+  }
+
+  &__clickaway {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 98;
+  }
+}
+
+.user-dropdown.active, .user-dropdown__clickaway.active {
+  display: flex;
 }

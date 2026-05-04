@@ -1,5 +1,4 @@
 import { ReadonlyURLSearchParams } from "next/navigation"
-import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from "react-icons/fi";
 import Link from 'next/link'
 

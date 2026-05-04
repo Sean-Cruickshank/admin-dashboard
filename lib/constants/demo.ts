@@ -4,6 +4,7 @@ export const DEMO_ACCOUNTS = [
   'f78a5a71-22ca-4cbc-bec1-0c8592a05828'
 ]
 
-export const DEMO_EXPIRY_HOURS = 0.02
+// default = 24
+export const DEMO_EXPIRY_HOURS = 0.01
 
 export const DEMO_LIFESPAN = DEMO_EXPIRY_HOURS * 60 * 60 * 1000

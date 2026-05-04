@@ -86,6 +86,9 @@ export default function ContentTable({ userId, mode } : ContentTableProps) {
         </div>
 
       <div className='table__dashboard'>
+        {mode === 'all' && <h1>Moderation Dashboard</h1>}
+        {mode === 'user' && <h1>My Dashboard</h1>}
+        
         {mode === 'all' && <h2>Recent Submissions</h2>}
         {mode === 'user' && <h2>My Submissions</h2>}
         {mode === 'approved' && <h2>Latest Posts</h2>}
