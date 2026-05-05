@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 import { useQueryClient } from '@tanstack/react-query'
+import { MdLogout } from "react-icons/md";
 
 export default function LogoutButton() {
   const router = useRouter()
@@ -16,5 +17,5 @@ export default function LogoutButton() {
     router.refresh()
   }
 
-  return <button onClick={handleLogout}>Logout</button>
+  return <button onClick={handleLogout}><MdLogout /> Logout</button>
 }

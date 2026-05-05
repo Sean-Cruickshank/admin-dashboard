@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { ContentWithProfiles } from '../types/Content'
 import { moderateContent, type ModerateContentState } from '@/app/dashboard/content/[id]/action'
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import formatDate from '@/lib/helpers/formatDate'
 
 type ContentPanelProps = {
   content: ContentWithProfiles
@@ -24,9 +25,10 @@ export default function ContentPanel({ content, role }: ContentPanelProps) {
   const [notes, setNotes] = useState('')
   const [notesError, setNotesError] = useState<string | null>(null)
   const [selectedAction, setSelectedAction] = useState<'approved' | 'rejected' | null>(null)
-  const [moderationCollapse, setModerationCollapse] = useState(false)
+  const [moderationCollapse, setModerationCollapse] = useState(true)
 
   const formattedStatus = content.effective_status[0].toUpperCase() + content.effective_status.slice(1)
+  const formattedBody = content.body.split(/\r?\n/).map(line => <p key={crypto.randomUUID()}>&nbsp;{line}</p>)
 
   useEffect(() => {
     if (state.success) {
@@ -50,8 +52,6 @@ export default function ContentPanel({ content, role }: ContentPanelProps) {
     return true
   }
 
-  
-
   return (
     <div className='content-panel'>
       <div className={moderationCollapse ? 'content-panel__content collapsed' : 'content-panel__content'}>
@@ -59,15 +59,30 @@ export default function ContentPanel({ content, role }: ContentPanelProps) {
           Back
         </button>
 
-        <div className='content-panel__title'>
-          <h1>{content.title}</h1>
-          <div className={`status__${content.effective_status}`}>
+        <div className='content-panel__head'>
+          <div className='content-panel__title'>
+            <h1>{content.title}</h1>
+          </div>
+          <div className={`content-panel__status status__${content.effective_status}`}>
             {content.effective_status}
           </div>
+          <i title={new Date(content.created_at).toLocaleString()}>
+            -- {formatDate(content.created_at)} --
+          </i>
+          <p>
+            {content.submitted_by_profiles?.username
+              ? `Submitted by: ${content.submitted_by_profiles?.username}`
+              : 'Submitted Anonymously'
+            }
+          </p>
         </div>
-        <p><strong>Submitted By:</strong> {content.submitted_by_profiles?.username}</p>
-        <p><strong>Created:</strong> {new Date(content.created_at).toLocaleString()}</p>
-        <p>{content.body}</p>
+
+        <div className='content-panel__body'>
+          {formattedBody}
+        </div>
+        <div className='content-panel__moderation-notes'>
+          {content.moderation_notes}
+        </div>
       </div>
 
       {(role === 'admin' || role === 'moderator') && (content.effective_status === 'pending' || role === 'admin') && (

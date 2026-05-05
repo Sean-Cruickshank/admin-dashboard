@@ -33,7 +33,8 @@ export default async function ReviewPage(props: { params: Promise<{ id: string }
     demo_override_expires_at: content.demo_override_expires_at,
     effective_status: content.effective_status as Content['effective_status'],
     submitted_by_profiles: content.submitted_by_profiles,
-    reviewed_by_profiles: content.reviewed_by_profiles
+    reviewed_by_profiles: content.reviewed_by_profiles,
+    moderation_notes: content.moderation_notes
   }
 
   return <ContentPanel content={typedContent} role={profile?.role} />

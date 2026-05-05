@@ -14,6 +14,23 @@ nav {
     padding: 0;
     margin: 0;
   }
+
+  & a {
+    padding: 4px 8px;
+    border-radius: 5px;
+    &:hover {
+      background-color: var(--backB);
+    }
+  }
+
+  & .active {
+    background-color: var(--primary);
+    color: white;
+
+    &:hover {
+      background-color: var(--primary);
+    }
+  }
 }
 
 .user-badge {

@@ -12,6 +12,7 @@ export type Content = Pick<ContentSchema,
   | 'created_at'
   | 'demo_override_status'
   | 'demo_override_expires_at'
+  | 'moderation_notes'
 > & { effective_status: 'pending' | 'approved' | 'rejected' }
 
 export type ContentWithProfile = Content & { profiles: { username: string } | null }

@@ -2,10 +2,28 @@
 
   &__content {
     width: 80%;
+    padding: 20px;
+    transition: 0.5s;
+    position: relative;
+
+    & button {
+      position: absolute;
+    }
 
     &.collapsed {
       width: calc(100% - 10px);
+
+      & .content-panel__body {
+        width: 80%;
+      }
     }
+  }
+
+  &__head {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
   &__title {
@@ -17,6 +35,20 @@
       margin: 0;
       padding: 0;
     }
+  }
+
+  &__status {
+    margin: 10px 0;
+  }
+
+  &__body {
+    width: 95%;
+    margin-inline: auto;
+    padding: 10px 20px;
+    border: solid 1px var(--backC);
+    border-radius: 20px;
+    background-color: var(--backA);
+    transition: 0.5s;
   }
 
   & .moderation-form {
